@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../../Services/producto-service';
 import { Producto } from '../../Interfaces/producto';
 import { Router } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-vista-producto-main',
-  imports: [],
+  imports: [CurrencyPipe],
   templateUrl: './vista-producto-main.html',
   styleUrl: './vista-producto-main.css',
 })
