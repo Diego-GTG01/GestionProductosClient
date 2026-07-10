@@ -5,7 +5,7 @@ import { Usuario } from "./usuario";
 export interface AuditoriaProducto {
     idAuditoria: number;
     producto: Producto;
-    tipooperacion: TipoOperacion;
+    tipoOperacion: TipoOperacion;
     usuario: Usuario;
     descripcionCambio: string;
     fechaOperacion: Date;

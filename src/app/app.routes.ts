@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { VistaLogin } from './Components/vista-login/vista-login';
 import { VistaProductoMain } from './Components/vista-producto-main/vista-producto-main';
 import { VistaDetalleProducto } from './Components/vista-detalle-producto/vista-detalle-producto';
+import { VistaAddProducto } from './Components/vista-add-producto/vista-add-producto';
 
 export const routes: Routes = [
   {
@@ -15,5 +16,8 @@ export const routes: Routes = [
   {
     path:'detail-product',
     component: VistaDetalleProducto
+  },{
+    path: 'add-product',
+    component: VistaAddProducto
   }
 ];

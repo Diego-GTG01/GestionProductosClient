@@ -1,4 +1,4 @@
 export interface TipoOperacion {
-    idTipoOperacion: number;
-    nombre: string
+  idTipoOperacion: number;
+  nombre: string;
 }
