@@ -1,1 +1,61 @@
-<p>vista-login works!</p>
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+
+    <div class="card shadow-lg p-4" style="width: 400px;">
+
+        <div class="text-center mb-4">
+            <h2>Iniciar Sesión</h2>
+            <p class="text-muted">Gestión de Productos</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+            <div class="mb-3">
+                <label class="form-label">
+                    Usuario
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    formControlName="username">
+
+                @if(loginForm.get('username')?.touched &&
+                    loginForm.get('username')?.invalid){
+
+                    <small class="text-danger">
+                        El usuario es requerido
+                    </small>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    Contraseña
+                </label>
+
+                <input
+                    type="password"
+                    class="form-control"
+                    formControlName="password">
+
+                @if(loginForm.get('password')?.touched &&
+                    loginForm.get('password')?.invalid){
+
+                    <small class="text-danger">
+                        La contraseña es requerida
+                    </small>
+                }
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary w-100">
+
+                Ingresar
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

@@ -4,20 +4,23 @@ import { Producto } from '../../Interfaces/producto';
 import { Router, RouterLink } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
 import Swal from 'sweetalert2';
+import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
 
 @Component({
   selector: 'app-vista-producto-main',
-  imports: [CurrencyPipe, RouterLink],
+  imports: [CurrencyPipe, RouterLink, VistaUserBadge],
   templateUrl: './vista-producto-main.html',
   styleUrl: './vista-producto-main.css',
 })
 export class VistaProductoMain implements OnInit {
+  idUsuario: number = 0;
   constructor(
     private productoService: ProductoService,
     private router: Router,
   ) {}
   productos: Producto[] = [];
   ngOnInit(): void {
+    this.idUsuario = Number(sessionStorage.getItem('idUsuario')) ?? 0;
     localStorage.removeItem('producto');
     this.cargarProductos();
   }
@@ -43,6 +46,27 @@ export class VistaProductoMain implements OnInit {
     this.router.navigate(['/detail-product']);
   }
 
+  editar(producto: Producto) {
+    this.productoService.editarProducto(producto).then((productoEditado) => {
+      if (productoEditado) {
+        this.productoService.update(productoEditado).subscribe((resp) => {
+          Swal.fire('Actualizado', 'Producto actualizado correctamente', 'success').then(() => {
+            this.cargarProductos();
+          });
+        });
+      }
+    });
+  }
+
+  editarImagen(producto: Producto) {
+    this.productoService.editarImagenProducto(producto).then((productoEditado) => {
+      if (productoEditado) {
+        console.log('Producto actualizado correctamente:', productoEditado);
+        this.cargarProductos();
+      }
+    });
+  }
+
   deleteProducto(producto: Producto): void {
     Swal.fire({
       title: '¿Eliminar producto?',
@@ -55,7 +79,7 @@ export class VistaProductoMain implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result: any) => {
       if (result.isConfirmed) {
-        this.productoService.delete(producto.idProducto).subscribe({
+        this.productoService.delete(producto.idProducto, this.idUsuario).subscribe({
           next: (result) => {
             if (result.correct) {
               Swal.fire({

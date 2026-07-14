@@ -4,10 +4,11 @@ import { ProductoService } from '../../Services/producto-service';
 import { Departamento } from '../../Interfaces/departamento';
 import { RouterLink } from '@angular/router';
 import { DepartamentoService } from '../../Services/departamento-service';
+import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
 
 @Component({
   selector: 'app-vista-add-producto',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, VistaUserBadge],
   templateUrl: './vista-add-producto.html',
   styleUrl: './vista-add-producto.css',
 })
@@ -16,11 +17,13 @@ export class VistaAddProducto implements OnInit {
   listaDepartamentos: Departamento[] = [];
   imagenSeleccionada: File | null = null;
   previsualizacionUrl: string | null = null;
+  idUsuario: Number = 0;
 
   constructor(
     private departamentoService: DepartamentoService,
     private productoService: ProductoService,
   ) {
+    this.idUsuario = Number(sessionStorage.getItem('idUsuario')) ?? 0;
     this.formularioRegistro = new FormGroup({
       clave: new FormControl('', [Validators.required]),
       nombre: new FormControl('', [Validators.required]),
@@ -31,7 +34,7 @@ export class VistaAddProducto implements OnInit {
         idDepartamento: new FormControl('', [Validators.required]),
       }),
       usuario: new FormGroup({
-        idUsuario: new FormControl(1),
+        idUsuario: new FormControl(this.idUsuario),
       }),
     });
   }
