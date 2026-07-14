@@ -19,10 +19,23 @@ export class VistaProductoMain implements OnInit {
     private router: Router,
   ) {}
   productos: Producto[] = [];
+  statusFiltro: number = 1;
   ngOnInit(): void {
     this.idUsuario = Number(sessionStorage.getItem('idUsuario')) ?? 0;
     localStorage.removeItem('producto');
     this.cargarProductos();
+  }
+
+  get productosActivos(): Producto[] {
+    return this.productos.filter((p) => p.status === 1);
+  }
+
+  get productosInactivos(): Producto[] {
+    return this.productos.filter((p) => p.status !== 1);
+  }
+
+  cambiarTab(status: number): void {
+    this.statusFiltro = status;
   }
 
   cargarProductos(): void {
@@ -68,24 +81,28 @@ export class VistaProductoMain implements OnInit {
   }
 
   deleteProducto(producto: Producto): void {
+    const activar = producto.status === 0;
+
     Swal.fire({
-      title: '¿Eliminar producto?',
-      text: `Se eliminará "${producto.nombre}" de forma permanente.`,
-      icon: 'warning',
+      title: activar ? '¿Activar producto?' : '¿Desactivar producto?',
+      text: activar ? `Se activará "${producto.nombre}".` : `Se desactivará "${producto.nombre}".`,
+      icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#d33',
+      confirmButtonColor: activar ? '#198754' : '#d33',
       cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Sí, eliminar',
+      confirmButtonText: activar ? 'Sí, activar' : 'Sí, desactivar',
       cancelButtonText: 'Cancelar',
     }).then((result: any) => {
       if (result.isConfirmed) {
         this.productoService.delete(producto.idProducto, this.idUsuario).subscribe({
-          next: (result) => {
-            if (result.correct) {
+          next: (response) => {
+            if (response.correct) {
               Swal.fire({
                 icon: 'success',
-                title: 'Producto eliminado',
-                text: 'El producto se eliminó correctamente.',
+                title: activar ? 'Producto activado' : 'Producto desactivado',
+                text: activar
+                  ? 'El producto se activó correctamente.'
+                  : 'El producto se desactivó correctamente.',
                 timer: 1800,
                 showConfirmButton: false,
               });
@@ -95,7 +112,7 @@ export class VistaProductoMain implements OnInit {
               Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: result.message || 'No fue posible eliminar el producto.',
+                text: response.message || 'No fue posible actualizar el estado del producto.',
               });
             }
           },
@@ -103,7 +120,7 @@ export class VistaProductoMain implements OnInit {
             Swal.fire({
               icon: 'error',
               title: 'Error del servidor',
-              text: 'Ocurrió un error al intentar eliminar el producto.',
+              text: 'Ocurrió un error al intentar actualizar el estado del producto.',
             });
           },
         });

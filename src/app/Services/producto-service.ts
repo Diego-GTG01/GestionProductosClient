@@ -152,7 +152,7 @@ export class ProductoService {
         const nombre = (document.getElementById('nombre') as HTMLInputElement).value;
         const descripcion = (document.getElementById('descripcion') as HTMLTextAreaElement).value;
         const precio = Number((document.getElementById('precio') as HTMLInputElement).value);
-        const status = Number((document.getElementById('status') as HTMLSelectElement).value);
+        
         const departamento = {
           idDepartamento: (document.getElementById('departamento') as HTMLSelectElement).value,
         };
@@ -165,7 +165,6 @@ export class ProductoService {
           nombre,
           descripcion,
           precio,
-          status,
           departamento,
           usuario,
           fechaActualizacion: new Date(),

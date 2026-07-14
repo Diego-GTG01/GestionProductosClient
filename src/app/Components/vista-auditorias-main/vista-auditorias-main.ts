@@ -34,7 +34,7 @@ export class VistaAuditoriasMain implements OnInit {
       next: (result) => {
         if (result.correct) {
           console.log('Auditorias obtenidas');
-          this.auditorias = result.objects.sort((a,b)=>a.fechaOperacion-b.fechaOperacion);
+          this.auditorias = result.objects.sort((a, b) => a.idAuditoria - b.idAuditoria);
           this.auditoriasFiltradas = [...this.auditorias];
           console.log(this.auditoriasFiltradas);
         }
@@ -81,6 +81,11 @@ export class VistaAuditoriasMain implements OnInit {
   }
 
   badge(tipo: string): string {
+    if(tipo=="ALTA") return 'bg-success'
+    if(tipo=="MODIFICACION") return 'bg-warning'
+    if(tipo=="DESACTIVACION") return 'bg-danger'
+    if(tipo=="ACTIVACION") return 'bg-primary'
+    
     return 'bg-secondary';
   }
 
