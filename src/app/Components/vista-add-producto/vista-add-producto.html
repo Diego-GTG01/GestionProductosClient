@@ -11,6 +11,8 @@
             <label for="clave" class="form-label">Clave del Producto:</label>
             <input
               type="text"
+              maxlength=10
+              minlength=10
               id="clave"
               class="form-control"
               [class.is-invalid]="getControl('clave').invalid && getControl('clave').touched"

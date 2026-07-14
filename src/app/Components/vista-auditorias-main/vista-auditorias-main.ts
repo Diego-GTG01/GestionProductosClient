@@ -34,7 +34,7 @@ export class VistaAuditoriasMain implements OnInit {
       next: (result) => {
         if (result.correct) {
           console.log('Auditorias obtenidas');
-          this.auditorias = result.objects;
+          this.auditorias = result.objects.sort((a,b)=>a.fechaOperacion-b.fechaOperacion);
           this.auditoriasFiltradas = [...this.auditorias];
           console.log(this.auditoriasFiltradas);
         }

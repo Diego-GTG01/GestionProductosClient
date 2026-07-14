@@ -93,7 +93,7 @@
             <div class="small text-secondary">
               <div>
                 <i class="bi bi-arrow-clockwise me-2"></i>
-                {{ producto.fechaActualizacion }}
+                {{ producto.fechaActualizacion | date: 'dd/MM/yyyy HH:mm'  }} hrs
               </div>
             </div>
           </div>

@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../../Services/producto-service';
 import { Producto } from '../../Interfaces/producto';
 import { Router, RouterLink } from '@angular/router';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
 
 @Component({
   selector: 'app-vista-producto-main',
-  imports: [CurrencyPipe, RouterLink, VistaUserBadge],
+  imports: [CurrencyPipe, DatePipe, RouterLink, VistaUserBadge],
   templateUrl: './vista-producto-main.html',
   styleUrl: './vista-producto-main.css',
 })

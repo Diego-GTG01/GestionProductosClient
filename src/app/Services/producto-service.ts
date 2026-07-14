@@ -108,23 +108,7 @@ export class ProductoService {
           class="form-control"
           value="${producto.precio ?? 0}">
       </div>
-      <div class="mb-3">
-        <label class="form-label">
-          Estado
-        </label>
-        <select 
-          id="status"
-          class="form-select">
-          <option value="1" 
-          ${producto.status == 1 ? 'selected' : ''}>
-              Activo
-          </option>
-          <option value="0"
-          ${producto.status == 0 ? 'selected' : ''}>
-              Inactivo
-          </option>
-        </select>
-      </div>
+      
       
       <div class="mb-3">
 

@@ -30,7 +30,7 @@
     <table class="table table-striped table-hover align-middle">
       <thead class="table-dark">
         <tr>
-          <th>ID</th>
+          <th>No</th>
 
           <th>Producto</th>
 
@@ -47,31 +47,31 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let a of auditoriasPagina">
-          <td>{{ a.idAuditoria }}</td>
+        @for (a of auditoriasPagina; track $index) {
+          <tr>
+            <td>{{ $index +1 }}</td>
 
-          <td>{{ a.producto.nombre }}</td>
+            <td>{{ a.producto.nombre }}</td>
 
-          <td>
-            <span class="badge" [class]="badge(a.tipoOperacion.nombre)">
-              {{ a.tipoOperacion.nombre }}
-            </span>
-          </td>
+            <td>
+              <span class="badge" [class]="badge(a.tipoOperacion.nombre)">
+                {{ a.tipoOperacion.nombre }}
+              </span>
+            </td>
 
-          <td>{{ a.usuario.username }}</td>
+            <td>{{ a.usuario.username }}</td>
 
-          <td>
-            {{ a.fechaOperacion | date: 'dd/MM/yyyy HH:mm' }}
-          </td>
+            <td>{{ a.fechaOperacion | date: 'dd/MM/yyyy HH:mm' }} hrs</td>
 
-          <td>
-            {{ a.descripcionCambio }}
-          </td>
+            <td>
+              {{ a.descripcionCambio }}
+            </td>
 
-          <td>
-            <button class="btn btn-primary btn-sm" (click)="detalle(a)">Ver</button>
-          </td>
-        </tr>
+            <td>
+              <button class="btn btn-primary btn-sm" (click)="detalle(a)">Ver</button>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
