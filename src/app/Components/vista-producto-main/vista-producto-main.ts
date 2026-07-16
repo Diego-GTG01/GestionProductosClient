@@ -116,7 +116,7 @@ export class VistaProductoMain implements OnInit {
               });
             }
           },
-          error: () => {
+          error: (err) => {
             Swal.fire({
               icon: 'error',
               title: 'Error del servidor',

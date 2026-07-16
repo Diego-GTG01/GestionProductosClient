@@ -1,0 +1,131 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="bi bi-people-fill me-2"></i>Gestión de Usuarios</h2>
+    <button class="btn btn-primary" (click)="abrirModalNuevo()">
+      <i class="bi bi-plus-lg me-1"></i>Nuevo Usuario
+    </button>
+  </div>
+
+  <!-- NAVEGACIÓN POR PESTAÑAS (TABS DE BOOTSTRAP) -->
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        [class.active]="tabSeleccionada() === 'activos'"
+        (click)="cambiarTab('activos')"
+      >
+        <i class="bi bi-person-check-fill me-1 text-success"></i>Activos
+      </button>
+    </li>
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        [class.active]="tabSeleccionada() === 'inactivos'"
+        (click)="cambiarTab('inactivos')"
+      >
+        <i class="bi bi-person-x-fill me-1 text-danger"></i>Inactivos
+      </button>
+    </li>
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        [class.active]="tabSeleccionada() === 'todos'"
+        (click)="cambiarTab('todos')"
+      >
+        <i class="bi bi-people me-1 text-primary"></i>Todos
+      </button>
+    </li>
+  </ul>
+
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2 text-muted">Cargando usuarios...</p>
+    </div>
+  } @else if (usuariosFiltrados().length === 0) {
+    <!-- Mostramos un mensaje personalizado según el filtro activo si no hay resultados -->
+    <div class="alert alert-info d-flex align-items-center shadow-sm">
+      <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+      <div>
+        @if (tabSeleccionada() === 'activos') {
+          No hay usuarios activos registrados.
+        } @else if (tabSeleccionada() === 'inactivos') {
+          No hay usuarios inactivos registrados.
+        } @else {
+          No hay usuarios registrados.
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="table-responsive shadow-sm rounded border">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Nombre completo</th>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Celular</th>
+            <th>Teléfono</th>
+            <th>Rol</th>
+            <th class="text-center">Estado</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuariosFiltrados(); track usuario.idUsuario) {
+            <tr>
+              <td>{{ usuario.idUsuario }}</td>
+              <td>
+                {{ usuario.nombre }} {{ usuario.apellidoPaterno }} {{ usuario.apellidoMaterno }}
+              </td>
+              <td><i class="bi bi-person-circle me-1 text-secondary"></i>{{ usuario.username }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.celular || '-' }}</td>
+              <td>{{ usuario.telefono || '-' }}</td>
+              <td>
+                @if (usuario.rol) {
+                  <span class="badge bg-secondary">{{ usuario.rol.nombre }}</span>
+                } @else {
+                  <span class="text-muted">-</span>
+                }
+              </td>
+              <td class="text-center">
+                @if (usuario.status == 1) {
+                  <span
+                    class="badge bg-success-subtle text-success border border-success-subtle px-2.5"
+                    >Activo</span
+                  >
+                } @else {
+                  <span
+                    class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5"
+                    >Inactivo</span
+                  >
+                }
+              </td>
+              <td class="text-center">
+                <button
+                  class="btn btn-sm btn-outline-warning me-2"
+                  (click)="abrirModalEditar(usuario)"
+                  title="Editar"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="eliminar(usuario)"
+                  title="Eliminar"
+                >
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

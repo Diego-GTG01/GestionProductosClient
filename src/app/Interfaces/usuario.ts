@@ -9,6 +9,7 @@ export interface Usuario {
   email: string;
   celular: string;
   telefono: string;
-  password: string;
+  password?: string;
   rol: Rol;
+  status?: number;
 }

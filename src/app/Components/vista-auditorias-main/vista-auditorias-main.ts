@@ -5,11 +5,13 @@ import Swal from 'sweetalert2';
 import { AuditoriaProducto } from '../../Interfaces/auditoria-producto';
 import { AuditoriaService } from '../../Services/auditoria-service';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
+import { RouterLink } from '@angular/router';
+import { ReporteService } from '../../Services/reporte-service';
 
 @Component({
   selector: 'app-vista-auditorias-main',
   standalone: true,
-  imports: [CommonModule, VistaUserBadge],
+  imports: [CommonModule, VistaUserBadge, RouterLink],
   templateUrl: './vista-auditorias-main.html',
   styleUrl: './vista-auditorias-main.css',
 })
@@ -20,13 +22,19 @@ export class VistaAuditoriasMain implements OnInit {
   vistaTabla = true;
 
   paginaActual = 1;
-  registrosPorPagina = 20;
+  registrosPorPagina = 10;
 
-  constructor(private auditoriaService: AuditoriaService) {}
+  constructor(
+    private auditoriaService: AuditoriaService,
+    private reporteService: ReporteService,
+  ) {}
 
   ngOnInit(): void {
     this.cargarAuditorias();
     console.log(this.auditorias);
+  }
+  descargar() {
+    this.reporteService.cargarReporte();
   }
 
   cargarAuditorias(): void {
@@ -81,11 +89,11 @@ export class VistaAuditoriasMain implements OnInit {
   }
 
   badge(tipo: string): string {
-    if(tipo=="ALTA") return 'bg-success'
-    if(tipo=="MODIFICACION") return 'bg-warning'
-    if(tipo=="DESACTIVACION") return 'bg-danger'
-    if(tipo=="ACTIVACION") return 'bg-primary'
-    
+    if (tipo == 'ALTA') return 'bg-success';
+    if (tipo == 'MODIFICACION') return 'bg-warning';
+    if (tipo == 'DESACTIVACION') return 'bg-danger';
+    if (tipo == 'ACTIVACION') return 'bg-primary';
+
     return 'bg-secondary';
   }
 
@@ -93,23 +101,14 @@ export class VistaAuditoriasMain implements OnInit {
     Swal.fire({
       title: 'Detalle de Auditoría',
       html: `
-
       <div class="text-start">
-
-      <p><b>ID:</b> ${a.idAuditoria}</p>
-
+      <p><b>Folio:</b> ${a.idAuditoria}</p>
       <p><b>Producto:</b> ${a.producto.nombre}</p>
-
       <p><b>Operación:</b> ${a.tipoOperacion.nombre}</p>
-
       <p><b>Usuario:</b> ${a.usuario.username}</p>
-
       <p><b>Fecha:</b> ${new Date(a.fechaOperacion).toLocaleString()}</p>
-
       <hr>
-
       <p>${a.descripcionCambio}</p>
-
       </div>
 
       `,
