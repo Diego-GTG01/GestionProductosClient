@@ -5,6 +5,7 @@ import { Departamento } from '../../Interfaces/departamento';
 import { RouterLink } from '@angular/router';
 import { DepartamentoService } from '../../Services/departamento-service';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
+import Swal from 'sweetalert2'; 
 
 @Component({
   selector: 'app-vista-add-producto',
@@ -48,13 +49,12 @@ export class VistaAddProducto implements OnInit {
       next: (result) => {
         if (result.correct) {
           this.listaDepartamentos = result.objects;
-          console.log(this.listaDepartamentos);
         } else {
-          console.log('No se pudo obtener Departamentos');
+          console.error('No se pudo obtener Departamentos');
         }
       },
       error: (err) => {
-        console.log(err);
+        console.error(err);
       },
     });
   }
@@ -74,30 +74,86 @@ export class VistaAddProducto implements OnInit {
       };
       reader.readAsDataURL(this.imagenSeleccionada);
     } else {
-      this.imagenSeleccionada = null;
-      this.previsualizacionUrl = null;
+      this.limpiarImagen();
     }
+  }
+
+  limpiarImagen(): void {
+    this.imagenSeleccionada = null;
+    this.previsualizacionUrl = null;
   }
 
   guardarProducto(): void {
     if (this.formularioRegistro.invalid) {
       this.formularioRegistro.markAllAsTouched();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario incompleto',
+        text: 'Por favor, llena todos los campos requeridos correctamente.',
+        confirmButtonColor: '#3085d6',
+      });
       return;
     }
+
+    Swal.fire({
+      title: 'Guardando producto...',
+      text: 'Por favor espera un momento.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
     const producto = this.formularioRegistro.value;
 
     this.productoService.add(producto, this.imagenSeleccionada!).subscribe({
       next: (result) => {
         if (result.correct) {
-          console.log('Producto agregado');
+          Swal.fire({
+            icon: 'success',
+            title: '¡Producto Agregado!',
+            text: 'El producto se registró correctamente en el catálogo.',
+            timer: 2500,
+            showConfirmButton: false,
+          });
+
+          this.limpiarFormulario();
         } else {
-          console.log(result.message);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al guardar',
+            text: result.message || 'Ocurrió un problema en el servidor.',
+            confirmButtonColor: '#d33',
+          });
         }
       },
       error: (err) => {
-        console.log(err);
+        console.error(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de conexión',
+          text: 'No se pudo comunicar con el servidor. Inténtalo más tarde.',
+          confirmButtonColor: '#d33',
+        });
       },
     });
+  }
+
+  limpiarFormulario(): void {
+    this.formularioRegistro.reset({
+      clave: '',
+      nombre: '',
+      descripcion: '',
+      precio: 0,
+      status: 1,
+      departamento: {
+        idDepartamento: '',
+      },
+      usuario: {
+        idUsuario: this.idUsuario,
+      },
+    });
+
+    this.limpiarImagen();
   }
 }

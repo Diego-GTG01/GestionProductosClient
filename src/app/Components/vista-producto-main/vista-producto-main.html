@@ -1,100 +1,149 @@
 <div class="container py-4">
-  <!-- Cabecera -->
-  <app-vista-user-badge></app-vista-user-badge>
+  <div class="mb-4">
+    <app-vista-user-badge></app-vista-user-badge>
+  </div>
 
   <div
-    class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 mt-3"
+    class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 mt-3"
   >
     <div>
-      <h2 class="fw-bold mb-1 d-flex align-items-center">
-        <i class="bi bi-shop me-2 text-primary fs-3"></i>
+      <h2 class="fw-bold mb-1 d-flex align-items-center text-dark">
+        <i class="bi bi-shop me-2 text-primary fs-2"></i>
         Catálogo de Productos
       </h2>
       <p class="text-muted mb-0">
         Administra los productos registrados en el sistema de manera eficiente.
       </p>
     </div>
-    <div class="d-flex gap-2">
-      <button class="btn btn-light border text-secondary" routerLink="/audits">
+
+    <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
+      <button
+        class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+        routerLink="/audits"
+      >
         <i class="bi bi-shield-check me-2"></i> Auditorías
       </button>
-      <button class="btn btn-success border text-light" routerLink="/users">
+      <button
+        class="btn btn-outline-success d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+        routerLink="/users"
+      >
         <i class="bi bi-people me-2"></i> Usuarios
       </button>
-      <button class="btn btn-primary shadow-sm" routerLink="/add-product">
+      <button
+        class="btn btn-primary shadow-sm d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+        routerLink="/add-product"
+      >
         <i class="bi bi-plus-lg me-2"></i> Nuevo Producto
       </button>
     </div>
   </div>
 
-  <!-- Barra de Búsqueda y Filtros Simplificada -->
-  <div class="row g-3 align-items-center mb-4">
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="input-group border rounded-3 shadow-sm overflow-hidden">
-        <span class="input-group-text bg-white border-0 text-muted"
-          ><i class="bi bi-search"></i
-        ></span>
-        <input
-          type="text"
-          class="form-control border-0 ps-0 shadow-none"
-          placeholder="Buscar por nombre, clave o folio..."
-        />
+  <div class="card border-0 shadow-sm p-3 mb-4 bg-white rounded-3">
+    <div class="row g-3 align-items-center">
+      <div class="col-12 col-xl-8">
+        <div class="row g-2">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-muted"><i class="bi bi-search"></i></span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nombre"
+                [(ngModel)]="nombreFiltro"
+                (input)="filtrar()"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-muted"><i class="bi bi-hash"></i></span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Clave"
+                [(ngModel)]="claveFiltro"
+                (input)="filtrar()"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-muted">$ Mín</span>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="0.00"
+                [(ngModel)]="precioMin"
+                (input)="filtrar()"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-muted">$ Máx</span>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="0.00"
+                [(ngModel)]="precioMax"
+                (input)="filtrar()"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="col-12 col-md-6 col-lg-8 d-flex justify-content-md-end align-items-center gap-3">
-      <!-- Filtros estilo pastilla (Pills) compactos -->
-      <div class="bg-light p-1 rounded-3 border d-flex gap-1" role="group">
-        <button
-          class="btn btn-sm rounded-2 px-3 fw-semibold transition-none border-0"
-          [class.bg-white]="statusFiltro === 1"
-          [class.shadow-sm]="statusFiltro === 1"
-          [class.text-dark]="statusFiltro === 1"
-          [class.text-muted]="statusFiltro !== 1"
-          (click)="cambiarTab(1)"
-          type="button"
-        >
-          <i class="bi bi-check-circle-fill me-1 text-success"></i> Activos
-        </button>
-        <button
-          class="btn btn-sm rounded-2 px-3 fw-semibold transition-none border-0"
-          [class.bg-white]="statusFiltro === 0"
-          [class.shadow-sm]="statusFiltro === 0"
-          [class.text-dark]="statusFiltro === 0"
-          [class.text-muted]="statusFiltro !== 0"
-          (click)="cambiarTab(0)"
-          type="button"
-        >
-          <i class="bi bi-x-circle-fill me-1 text-danger"></i> Inactivos
-        </button>
+      <div
+        class="col-12 col-xl-4 d-flex justify-content-between justify-content-xl-end align-items-center gap-3"
+      >
+        <div class="bg-light p-1 rounded-3 border d-flex gap-1" role="group">
+          <button
+            class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
+            [class.bg-white]="statusFiltro === 1"
+            [class.shadow-sm]="statusFiltro === 1"
+            [class.text-dark]="statusFiltro === 1"
+            [class.text-muted]="statusFiltro !== 1"
+            (click)="cambiarTab(1)"
+            type="button"
+          >
+            <i class="bi bi-check-circle-fill me-1 text-success"></i> Activos
+          </button>
+          <button
+            class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
+            [class.bg-white]="statusFiltro === 0"
+            [class.shadow-sm]="statusFiltro === 0"
+            [class.text-dark]="statusFiltro === 0"
+            [class.text-muted]="statusFiltro !== 0"
+            (click)="cambiarTab(0)"
+            type="button"
+          >
+            <i class="bi bi-x-circle-fill me-1 text-danger"></i> Inactivos
+          </button>
+        </div>
+
+        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-normal shadow-xs">
+          <span class="fw-bold text-primary">{{
+            statusFiltro === 1 ? productosActivos.length : productosInactivos.length
+          }}</span>
+          Productos
+        </span>
       </div>
-
-      <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-normal shadow-sm">
-        <span class="fw-bold">{{
-          statusFiltro === 1 ? productosActivos.length : productosInactivos.length
-        }}</span>
-        Productos
-      </span>
     </div>
   </div>
 
-  <!-- Grid de Productos -->
   <div class="row g-4">
-    @for (
-      producto of statusFiltro === 1 ? productosActivos : productosInactivos;
-      track producto.idProducto
-    ) {
+    @for (producto of productosPaginados; track producto.idProducto) {
       <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-        <div class="card h-100 shadow-lg border-0 rounded-3 overflow-hidden">
+        <div class="card h-100 shadow-sm border border-light-subtle rounded-3 overflow-hidden">
           <div
             class="bg-light d-flex flex-column align-items-center justify-content-center position-relative border-bottom"
-            style="height: 220px"
+            style="height: 200px"
           >
             <span
-              class="badge position-absolute top-0 start-0 m-3 shadow-sm px-2 py-1.5"
+              class="badge position-absolute top-0 start-0 m-3 shadow-sm px-2 py-1"
               [class.bg-success]="producto.status == 1"
               [class.bg-danger]="producto.status != 1"
-              style="font-size: 0.75rem"
+              style="font-size: 0.7rem"
             >
               {{ producto.status == 1 ? 'Activo' : 'Inactivo' }}
             </span>
@@ -103,16 +152,18 @@
               <img
                 src="data:image/png;base64,{{ producto.imagen }}"
                 class="img-fluid p-3"
-                style="max-height: 200px; object-fit: contain"
+                style="max-height: 180px; object-fit: contain"
                 alt="Imagen de {{ producto.nombre }}"
               />
             } @else {
-              <i class="bi bi-box-seam display-2 text-secondary opacity-50"></i>
+              <div class="text-center text-muted opacity-50">
+                <i class="bi bi-box-seam display-3"></i>
+              </div>
             }
 
             <button
-              class="btn btn-white bg-white text-dark btn-sm rounded-circle shadow-sm position-absolute border"
-              style="bottom: 12px; right: 12px; width: 36px; height: 36px; padding: 0"
+              class="btn btn-light btn-sm rounded-circle shadow-sm position-absolute border"
+              style="bottom: 12px; right: 12px; width: 34px; height: 34px; padding: 0"
               (click)="editarImagen(producto)"
               title="Cambiar imagen"
               type="button"
@@ -121,16 +172,15 @@
             </button>
           </div>
 
-          <!-- Cuerpo de la Tarjeta -->
           <div class="card-body d-flex flex-column p-3">
             <div class="d-flex align-items-center gap-2 mb-2">
               <span
                 class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1"
-                style="font-size: 0.75rem"
+                style="font-size: 0.7rem"
               >
                 {{ producto.clave }}
               </span>
-              <small class="text-muted ms-auto" style="font-size: 0.75rem"
+              <small class="text-muted ms-auto" style="font-size: 0.7rem"
                 >Folio #{{ producto.folio }}</small
               >
             </div>
@@ -139,46 +189,41 @@
               {{ producto.nombre }}
             </h6>
 
-            <div
-              class="my-2 bg-success-subtle text-success-emphasis rounded-3 p-2 text-center border border-success-subtle"
-            >
-              <span class="fs-5 fw-bolder">
+            <div class="my-2 bg-light rounded-3 p-2 text-center border">
+              <span class="fs-5 fw-bold text-dark">
                 {{ producto.precio | currency: '' : 'symbol' : '1.2-2' }}
               </span>
-              <small class="fw-medium text-muted ms-1" style="font-size: 0.75rem">MXN</small>
+              <small class="fw-semibold text-muted ms-1" style="font-size: 0.7rem">MXN</small>
             </div>
 
             <div
               class="mt-auto pt-2 text-muted border-top d-flex align-items-center"
-              style="font-size: 0.75rem"
+              style="font-size: 0.7rem"
             >
-              <i class="bi bi-clock-history me-1.5 text-secondary"></i>
+              <i class="bi bi-clock-history me-2 text-secondary"></i>
               <span>Act: {{ producto.fechaActualizacion | date: 'dd/MM/yyyy HH:mm' }}</span>
             </div>
           </div>
 
-          <div class="card-footer bg-white border-top-0 p-2">
+          <div class="card-footer bg-light border-top-0 p-2">
             <div class="row g-1">
               <div class="col-8">
                 <div class="btn-group w-100" role="group">
                   <button
-                    class="btn btn-sm btn-outline-secondary rounded-start-2 border-end-0"
+                    class="btn btn-sm btn-outline-secondary border-end-0"
                     (click)="verDetalle(producto)"
                     title="Ver detalle"
                   >
                     <i class="bi bi-eye"></i>
                   </button>
-                  <button
-                    class="btn btn-sm btn-outline-primary rounded-end-2"
-                    (click)="editar(producto)"
-                  >
+                  <button class="btn btn-sm btn-primary" (click)="editar(producto)">
                     <i class="bi bi-pencil me-1"></i> Editar
                   </button>
                 </div>
               </div>
               <div class="col-4">
                 <button
-                  class="btn btn-sm w-100 rounded-2"
+                  class="btn btn-sm w-100"
                   [class.btn-outline-danger]="producto.status == 1"
                   [class.btn-outline-success]="producto.status != 1"
                   (click)="deleteProducto(producto)"
@@ -197,14 +242,30 @@
       </div>
     } @empty {
       <div class="col-12 text-center py-5">
-        <div class="bg-light d-inline-block rounded-circle p-4 mb-3">
+        <div class="bg-light d-inline-block rounded-circle p-4 mb-3 border">
           <i class="bi bi-box-seam display-4 text-muted"></i>
         </div>
         <h5 class="fw-bold text-dark">No se encontraron productos</h5>
-        <p class="text-muted mx-auto" style="max-width: 360px">
-          Esta categoría está vacía o no hay elementos que coincidan con los criterios de búsqueda.
+        <p class="text-muted mx-auto mb-0" style="max-width: 360px">
+          Esta categoría está vacía o no hay elementos que coincidan con tus criterios de búsqueda.
         </p>
       </div>
     }
   </div>
+
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center pagination-sm">
+      <li class="page-item" [class.disabled]="paginaActual == 1">
+        <button class="page-link shadow-none" (click)="paginaAnterior()">Anterior</button>
+      </li>
+      <li class="page-item disabled">
+        <span class="page-link text-dark fw-medium px-3">
+          Pág. {{ paginaActual }} de {{ totalPaginas }}
+        </span>
+      </li>
+      <li class="page-item" [class.disabled]="paginaActual == totalPaginas">
+        <button class="page-link shadow-none" (click)="paginaSiguiente()">Siguiente</button>
+      </li>
+    </ul>
+  </nav>
 </div>

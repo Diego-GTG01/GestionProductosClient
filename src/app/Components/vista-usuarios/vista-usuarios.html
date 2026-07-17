@@ -1,34 +1,52 @@
 <div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0"><i class="bi bi-people-fill me-2"></i>Gestión de Usuarios</h2>
-    <button class="btn btn-primary" (click)="abrirModalNuevo()">
+  <div class="mb-4">
+    <app-vista-user-badge></app-vista-user-badge>
+  </div>
+
+  <div
+    class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4"
+  >
+    <h2 class="mb-0 fw-bold text-dark d-flex align-items-center">
+      <i class="bi bi-people-fill text-primary me-2"></i>
+      Gestión de Usuarios
+    </h2>
+    <button
+      class="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
+      routerLink="/products"
+    >
+      <i class="bi bi-arrow-left"></i>
+      Regresar
+    </button>
+    <button
+      class="btn btn-primary px-4 py-2 rounded-pill shadow-sm fw-medium w-100 w-sm-auto"
+      (click)="abrirModalNuevo()"
+    >
       <i class="bi bi-plus-lg me-1"></i>Nuevo Usuario
     </button>
   </div>
 
-  <!-- NAVEGACIÓN POR PESTAÑAS (TABS DE BOOTSTRAP) -->
-  <ul class="nav nav-tabs mb-4">
-    <li class="nav-item">
+  <ul class="nav nav-pills mb-4 bg-light p-1 rounded-3 d-inline-flex w-100 w-sm-auto">
+    <li class="nav-item flex-fill text-center">
       <button
-        class="nav-link"
+        class="nav-link rounded-3 py-2"
         [class.active]="tabSeleccionada() === 'activos'"
         (click)="cambiarTab('activos')"
       >
         <i class="bi bi-person-check-fill me-1 text-success"></i>Activos
       </button>
     </li>
-    <li class="nav-item">
+    <li class="nav-item flex-fill text-center">
       <button
-        class="nav-link"
+        class="nav-link rounded-3 py-2"
         [class.active]="tabSeleccionada() === 'inactivos'"
         (click)="cambiarTab('inactivos')"
       >
         <i class="bi bi-person-x-fill me-1 text-danger"></i>Inactivos
       </button>
     </li>
-    <li class="nav-item">
+    <li class="nav-item flex-fill text-center">
       <button
-        class="nav-link"
+        class="nav-link rounded-3 py-2"
         [class.active]="tabSeleccionada() === 'todos'"
         (click)="cambiarTab('todos')"
       >
@@ -37,6 +55,7 @@
     </li>
   </ul>
 
+  <!-- ESTADO DE CARGA -->
   @if (cargando()) {
     <div class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
@@ -45,8 +64,8 @@
       <p class="mt-2 text-muted">Cargando usuarios...</p>
     </div>
   } @else if (usuariosFiltrados().length === 0) {
-    <!-- Mostramos un mensaje personalizado según el filtro activo si no hay resultados -->
-    <div class="alert alert-info d-flex align-items-center shadow-sm">
+    <!-- ALERTA DE SIN RESULTADOS -->
+    <div class="alert alert-info d-flex align-items-center shadow-sm rounded-3">
       <i class="bi bi-info-circle-fill me-2 fs-5"></i>
       <div>
         @if (tabSeleccionada() === 'activos') {
@@ -59,35 +78,126 @@
       </div>
     </div>
   } @else {
-    <div class="table-responsive shadow-sm rounded border">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-dark">
+    <!-- ==================== VISTA PARA CELULARES (CARDS) ==================== -->
+    <div class="d-block d-md-none">
+      <div class="row g-3">
+        @for (usuario of usuariosFiltrados(); track usuario.idUsuario) {
+          <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+              <div class="card-body p-3">
+                <!-- Fila Superior: Nombre e Info Primaria -->
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="bg-light rounded-circle p-2 text-primary d-flex align-items-center justify-content-center"
+                      style="width: 40px; height: 40px"
+                    >
+                      <i class="bi bi-person-fill fs-5"></i>
+                    </div>
+                    <div>
+                      <h6 class="mb-0 fw-bold text-dark">
+                        {{ usuario.nombre }} {{ usuario.apellidoPaterno }}
+                      </h6>
+                      <span class="text-muted small">@{{ usuario.username }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Estado -->
+                  @if (usuario.status == 1) {
+                    <span
+                      class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1"
+                      >Activo</span
+                    >
+                  } @else {
+                    <span
+                      class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1"
+                      >Inactivo</span
+                    >
+                  }
+                </div>
+
+                <hr class="my-2 text-muted opacity-25" />
+
+                <!-- Detalles Rápidos -->
+                <div class="row g-2 small text-secondary mb-3">
+                  <div class="col-12">
+                    <i class="bi bi-envelope me-2 text-muted"></i>{{ usuario.email }}
+                  </div>
+                  <div class="col-6">
+                    <i class="bi bi-phone me-2 text-muted"></i>{{ usuario.celular || '-' }}
+                  </div>
+                  <div class="col-6">
+                    <i class="bi bi-person-badge me-2 text-muted"></i>
+                    @if (usuario.rol) {
+                      <span
+                        class="badge bg-secondary-subtle text-secondary border border-secondary-subtle"
+                        >{{ usuario.rol.nombre }}</span
+                      >
+                    } @else {
+                      <span class="text-muted">-</span>
+                    }
+                  </div>
+                </div>
+
+                <!-- Botones de Acción Móvil -->
+                <div class="d-flex gap-2">
+                  <button
+                    class="btn btn-outline-warning btn-sm flex-grow-1 py-2 rounded-3"
+                    (click)="abrirModalEditar(usuario)"
+                  >
+                    <i class="bi bi-pencil-square me-1"></i>Editar
+                  </button>
+                  <button
+                    class="btn btn-outline-danger btn-sm flex-grow-1 py-2 rounded-3"
+                    (click)="eliminar(usuario)"
+                  >
+                    <i class="bi bi-trash3 me-1"></i>Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- ==================== VISTA PARA TABLETS Y COMPUTADORAS (TABLA) ==================== -->
+    <div class="table-responsive shadow-sm rounded-4 border-0 d-none d-md-block">
+      <table class="table table-hover align-middle mb-0 bg-white">
+        <thead class="table-light border-bottom">
           <tr>
-            <th>#</th>
-            <th>Nombre completo</th>
-            <th>Usuario</th>
-            <th>Email</th>
-            <th>Celular</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th class="text-center">Estado</th>
-            <th class="text-center">Acciones</th>
+            <th class="ps-3 text-secondary">ID</th>
+            <th class="text-secondary">Nombre completo</th>
+            <th class="text-secondary">Usuario</th>
+            <th class="text-secondary">Email</th>
+            <th class="text-secondary">Celular</th>
+            <th class="text-secondary">Rol</th>
+            <th class="text-center text-secondary">Estado</th>
+            <th class="text-center pe-3 text-secondary">Acciones</th>
           </tr>
         </thead>
         <tbody>
           @for (usuario of usuariosFiltrados(); track usuario.idUsuario) {
             <tr>
-              <td>{{ usuario.idUsuario }}</td>
+              <td class="ps-3 fw-bold text-muted">#{{ usuario.idUsuario }}</td>
               <td>
-                {{ usuario.nombre }} {{ usuario.apellidoPaterno }} {{ usuario.apellidoMaterno }}
+                <div class="fw-semibold text-dark">
+                  {{ usuario.nombre }} {{ usuario.apellidoPaterno }} {{ usuario.apellidoMaterno }}
+                </div>
               </td>
-              <td><i class="bi bi-person-circle me-1 text-secondary"></i>{{ usuario.username }}</td>
-              <td>{{ usuario.email }}</td>
+              <td>
+                <span class="badge bg-light text-dark border px-2 py-1">
+                  <i class="bi bi-person-circle me-1 text-secondary"></i>{{ usuario.username }}
+                </span>
+              </td>
+              <td class="text-muted">{{ usuario.email }}</td>
               <td>{{ usuario.celular || '-' }}</td>
-              <td>{{ usuario.telefono || '-' }}</td>
               <td>
                 @if (usuario.rol) {
-                  <span class="badge bg-secondary">{{ usuario.rol.nombre }}</span>
+                  <span
+                    class="badge bg-secondary-subtle text-secondary border border-secondary-subtle"
+                    >{{ usuario.rol.nombre }}</span
+                  >
                 } @else {
                   <span class="text-muted">-</span>
                 }
@@ -95,27 +205,26 @@
               <td class="text-center">
                 @if (usuario.status == 1) {
                   <span
-                    class="badge bg-success-subtle text-success border border-success-subtle px-2.5"
+                    class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1"
                     >Activo</span
                   >
                 } @else {
                   <span
-                    class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5"
+                    class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1"
                     >Inactivo</span
                   >
                 }
               </td>
-              <td class="text-center">
+              <td class="text-center pe-3">
                 <button
-                  class="btn btn-sm btn-outline-warning me-2"
+                  class="btn btn-sm btn-action btn-outline-warning me-1"
                   (click)="abrirModalEditar(usuario)"
                   title="Editar"
                 >
                   <i class="bi bi-pencil-square"></i>
                 </button>
-                
                 <button
-                  class="btn btn-sm btn-outline-danger"
+                  class="btn btn-sm btn-action btn-outline-danger"
                   (click)="eliminar(usuario)"
                   title="Eliminar"
                 >

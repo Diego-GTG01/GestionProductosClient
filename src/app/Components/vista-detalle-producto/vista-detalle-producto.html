@@ -1,31 +1,41 @@
-<div class="container my-5">
+<div class="container ">
   <app-vista-user-badge></app-vista-user-badge>
-  <div class="mb-4">
+  
+  <div class="d-flex justify-content-between align-items-center mb-4">
     <button class="btn btn-outline-secondary" routerLink="/products">
-      <i class="bi bi-arrow-left"></i>
-      Regresar
+      <i class="bi bi-arrow-left"></i> Regresar
+    </button>
+
+    <button class="btn btn-primary" (click)="abrirEditarProducto()">
+      <i class="bi bi-pencil-square me-2"></i> Editar Producto
     </button>
   </div>
 
   <div class="card shadow border-0">
     <div class="row g-0">
-      <!-- Imagen -->
+      <!-- Imagen con opción de cambio -->
       <div class="col-md-5">
-        <div class="h-100 d-flex align-items-center justify-content-center bg-light p-4">
+        <div class="h-100 d-flex flex-column align-items-center justify-content-center bg-light p-4 position-relative group">
           @if (producto.imagen) {
             <img
               src="data:image/png;base64,{{ producto.imagen }}"
-              class="img-fluid rounded"
-              style="max-height: 400px"
+              class="img-fluid rounded shadow-sm"
+              style="max-height: 400px; object-fit: cover;"
               [alt]="producto.nombre"
             />
           } @else {
             <div class="text-center text-muted">
               <i class="bi bi-image fs-1"></i>
-
               <p class="mt-3 mb-0">Sin imagen</p>
             </div>
           }
+          <!-- Botón superpuesto para cambiar imagen -->
+          <button 
+            class="btn btn-dark btn-sm opacity-75 mt-3" 
+            (click)="abrirEditarImagen()"
+            title="Cambiar imagen">
+            <i class="bi bi-camera me-2"></i> Cambiar Imagen
+          </button>
         </div>
       </div>
 
@@ -36,7 +46,6 @@
               <span class="badge bg-secondary mb-2">
                 {{ producto.clave }}
               </span>
-
               <h2 class="fw-bold mb-2">
                 {{ producto.nombre }}
               </h2>
@@ -55,7 +64,6 @@
 
           <div class="mb-4">
             <h5 class="text-primary">Precio</h5>
-
             <h2 class="fw-bold text-success">
               {{ producto.precio | currency: '' : 'symbol' : '1.2-2' }} MXN
             </h2>
@@ -63,7 +71,6 @@
 
           <div class="mb-4">
             <h5 class="text-primary">Descripción</h5>
-
             <p class="text-muted">
               {{ producto.descripcion }}
             </p>
@@ -74,7 +81,6 @@
               <div class="card bg-light border-0">
                 <div class="card-body">
                   <small class="text-muted"> Departamento </small>
-
                   <h5 class="mb-0">
                     <i class="bi bi-building me-2"></i>
                     {{ producto.departamento.nombre }}
@@ -82,14 +88,12 @@
                 </div>
               </div>
             </div>
+            
             <div class="col-md-6 mb-3">
               <div class="card bg-light border-0">
                 <div class="card-body">
                   <small class="text-muted"> Folio </small>
-
-                  <h6 class="mb-0">
-                    {{ producto.folio }}
-                  </h6>
+                  <h6 class="mb-0">{{ producto.folio }}</h6>
                 </div>
               </div>
             </div>
@@ -98,7 +102,6 @@
               <div class="card bg-light border-0">
                 <div class="card-body">
                   <small class="text-muted"> Fecha de registro </small>
-
                   <h6 class="mb-0">
                     {{ producto.fechaRegistro | date: 'dd/MM/yyyy HH:mm' }}
                   </h6>
@@ -110,7 +113,6 @@
               <div class="card bg-light border-0">
                 <div class="card-body">
                   <small class="text-muted"> Última actualización </small>
-
                   <h6 class="mb-0">
                     {{ producto.fechaActualizacion | date: 'dd/MM/yyyy HH:mm' }}
                   </h6>
@@ -121,11 +123,9 @@
             <div class="col-md-6">
               <div class="card bg-light border-0">
                 <div class="card-body">
-                  <small class="text-muted"> Usuario que realizó ultimo cambio </small>
-
+                  <small class="text-muted"> Usuario que realizó último cambio </small>
                   <h6 class="mb-0">
-                    {{ producto.usuario.nombre }}
-                    {{ producto.usuario.apellidoPaterno }}
+                    {{ producto.usuario.nombre }} {{ producto.usuario.apellidoPaterno }}
                     ({{ producto.usuario.username }})
                   </h6>
                 </div>
@@ -136,4 +136,4 @@
       </div>
     </div>
   </div>
-</div>
+</div>  

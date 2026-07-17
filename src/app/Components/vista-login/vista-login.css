@@ -1,0 +1,65 @@
+/* Fondo de pantalla con gradiente fluido */
+.login-background {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  background-size: cover;
+}
+
+/* Efecto translúcido y elevación en la tarjeta de login */
+.login-card {
+  background: #ffffff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), 0 5px 15px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Círculo contenedor del icono de marca */
+.brand-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #2563eb;
+}
+
+/* Enfocar inputs */
+.form-control:focus {
+  background-color: #ffffff !important;
+  border-color: #bfdbfe;
+  box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.12);
+}
+
+.input-group-text {
+  border-color: #dee2e6;
+}
+
+.form-control.is-invalid + .invalid-feedback {
+  display: block;
+}
+
+/* Transición en el botón */
+.transition-all {
+  transition: all 0.25s ease-in-out;
+}
+
+.btn-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3) !important;
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+/* Animación rápida de aparición para errores */
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

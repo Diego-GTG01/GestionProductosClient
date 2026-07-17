@@ -1,168 +1,208 @@
-<div class="container mt-4">
-  <app-vista-user-badge></app-vista-user-badge>
-  <div class="card shadow">
-    <div class="card-header bg-primary text-white">
-      <h2 class="card-title mb-0 fs-4">Agregar Nuevo Producto</h2>
-    </div>
-    <div class="card-body">
+<div class="container py-5">
+  <!-- BADGE DE USUARIO -->
+  <div class="mb-4">
+    <app-vista-user-badge></app-vista-user-badge>
+  </div>
+
+  <!-- TARJETA PRINCIPAL DEL FORMULARIO -->
+  <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+    <div class="card-body p-4 p-md-5">
+      
+      <!-- CABECERA INTEGRADA -->
+      <div class="mb-4 border-bottom pb-3">
+        <h3 class="fw-bold text-dark mb-1 d-flex align-items-center">
+          <i class="bi bi-box-seam-fill text-primary me-2 fs-4"></i>
+          Agregar Nuevo Producto
+        </h3>
+        <p class="text-muted small mb-0">Completa la siguiente información técnica y comercial para dar de alta el producto en el catálogo.</p>
+      </div>
+
       <form [formGroup]="formularioRegistro" (ngSubmit)="guardarProducto()" novalidate>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="clave" class="form-label">Clave del Producto:</label>
-            <input
-              type="text"
-              maxlength=10
-              minlength=10
-              id="clave"
-              class="form-control"
-              [class.is-invalid]="getControl('clave').invalid && getControl('clave').touched"
-              formControlName="clave"
-              placeholder="Ej. PROD-001"
-            />
-            @if (getControl('clave').invalid && getControl('clave').touched) {
-              <div class="invalid-feedback">La clave es requerida.</div>
-            }
-          </div>
+        <div class="row g-4">
+          
+          <!-- SECCIÓN IZQUIERDA: ÁREA DE IMAGEN -->
+          <div class="col-lg-4 col-md-5">
+            <label class="form-label fw-semibold text-secondary mb-2">Imagen del Producto</label>
+            
+            <div class="d-flex flex-column align-items-center">
+              <!-- CONTENEDOR DE VISTA PREVIA / ZONA DE CARGA -->
+              <div 
+                class="w-100 border border-2 border-dashed rounded-4 d-flex flex-column align-items-center justify-content-center p-3 text-center position-relative bg-light transition-all"
+                style="min-height: 250px; cursor: pointer;"
+                (click)="fileInput.click()"
+              >
+                @if (previsualizacionUrl) {
+                  <img
+                    [src]="previsualizacionUrl"
+                    alt="Vista previa del producto"
+                    class="img-fluid rounded-3 shadow-sm object-fit-contain w-100 h-100"
+                    style="max-height: 220px;"
+                  />
+                  <!-- Capa flotante al pasar el mouse opcional -->
+                  <div class="position-absolute bottom-0 end-0 m-2">
+                    <span class="badge bg-dark opacity-75 rounded-pill"><i class="bi bi-arrow-repeat me-1"></i>Cambiar</span>
+                  </div>
+                } @else {
+                  <div class="py-4 text-muted">
+                    <i class="bi bi-cloud-arrow-up text-primary fs-1 mb-2 d-block"></i>
+                    <span class="fw-medium d-block small mb-1">Haz clic para subir imagen</span>
+                    <span class="text-muted text-uppercase px-2 style-format">Formatos: PNG, JPG</span>
+                  </div>
+                }
+              </div>
 
-          <div class="col-md-6 mb-3">
-            <label for="nombre" class="form-label">Nombre:</label>
-            <input
-              type="text"
-              id="nombre"
-              class="form-control"
-              [class.is-invalid]="getControl('nombre').invalid && getControl('nombre').touched"
-              formControlName="nombre"
-              placeholder="Nombre del producto"
-            />
-            @if (getControl('nombre').invalid && getControl('nombre').touched) {
-              <div class="invalid-feedback">El nombre es requerido.</div>
-            }
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="descripcion" class="form-label">Descripción:</label>
-          <textarea
-            id="descripcion"
-            class="form-control"
-            [class.is-invalid]="
-              getControl('descripcion').invalid && getControl('descripcion').touched
-            "
-            formControlName="descripcion"
-            rows="3"
-            placeholder="Detalles del producto..."
-          ></textarea>
-          @if (getControl('descripcion').invalid && getControl('descripcion').touched) {
-            <div class="invalid-feedback">La descripción es requerida.</div>
-          }
-        </div>
-
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label for="precio" class="form-label">Precio:</label>
-            <div class="input-group has-validation">
-              <span class="input-group-text">$</span>
+              <!-- INPUT DE ARCHIVO OCULTO (Activado por clics en el contenedor superior) -->
               <input
-                type="number"
-                id="precio"
-                class="form-control"
-                [class.is-invalid]="getControl('precio').invalid && getControl('precio').touched"
-                formControlName="precio"
-                step="0.01"
+                #fileInput
+                type="file"
+                id="imagen"
+                class="d-none"
+                (change)="onFileChange($event)"
+                accept="image/*"
               />
-              @if (getControl('precio').invalid && getControl('precio').touched) {
-                <div class="invalid-feedback">
-                  @if (getControl('precio').errors?.['required']) {
-                    El precio es requerido.
-                  }
-                  @if (getControl('precio').errors?.['min']) {
-                    El precio debe ser mayor a 0.01.
-                  }
-                </div>
-              }
+              <p class="text-muted small text-center mt-2 mb-0">Resolución recomendada: 800x800 px.</p>
             </div>
           </div>
 
-          <div class="col-md-4 mb-3" formGroupName="departamento">
-            <label for="idDepartamento" class="form-label">Departamento:</label>
-            <select
-              id="idDepartamento"
-              class="form-select"
-              [class.is-invalid]="
-                getControl('departamento.idDepartamento').invalid &&
-                getControl('departamento.idDepartamento').touched
-              "
-              formControlName="idDepartamento"
-            >
-              <option value="" disabled selected>Selecciona un departamento</option>
-              @for (dep of listaDepartamentos; track dep.idDepartamento) {
-                <option [value]="dep.idDepartamento">{{ dep.nombre }}</option>
-              }
-            </select>
-            @if (
-              getControl('departamento.idDepartamento').invalid &&
-              getControl('departamento.idDepartamento').touched
-            ) {
-              <div class="invalid-feedback">Debes seleccionar un departamento.</div>
-            }
-          </div>
+          <!-- SECCIÓN DERECHA: DATOS DEL FORMULARIO -->
+          <div class="col-lg-8 col-md-7">
+            <div class="row g-3">
+              
+              <!-- CLAVE -->
+              <div class="col-md-6">
+                <label for="clave" class="form-label fw-semibold text-secondary">Clave del Producto</label>
+                <div class="position-relative">
+                  <input
+                    type="text"
+                    maxlength="10"
+                    minlength="10"
+                    id="clave"
+                    class="form-control rounded-3"
+                    [class.is-invalid]="getControl('clave').invalid && getControl('clave').touched"
+                    formControlName="clave"
+                    placeholder="Ej. PROD000001"
+                  />
+                  @if (getControl('clave').invalid && getControl('clave').touched) {
+                    <div class="invalid-feedback animate-fade-in">La clave es requerida (10 caracteres).</div>
+                  }
+                </div>
+              </div>
 
-          <div class="col-md-4 mb-3">
-            <label for="status" class="form-label">Estado:</label>
-            <select
-              id="status"
-              class="form-select"
-              [class.is-invalid]="getControl('status').invalid && getControl('status').touched"
-              formControlName="status"
-            >
-              <option [value]="1">Activo</option>
-              <option [value]="0">Inactivo</option>
-            </select>
-            @if (getControl('status').invalid && getControl('status').touched) {
-              <div class="invalid-feedback">El estado es requerido.</div>
-            }
-          </div>
-        </div>
-
-        <div class="row align-items-center mb-4">
-          <div class="col-md-8 mb-3 mb-md-0">
-            <label for="imagen" class="form-label">Imagen del Producto:</label>
-            <input
-              type="file"
-              id="imagen"
-              class="form-control"
-              (change)="onFileChange($event)"
-              accept="image/*"
-            />
-          </div>
-          <div class="col-md-4 text-center">
-            @if (previsualizacionUrl) {
-              <div class="border rounded p-2 bg-light">
-                <img
-                  [src]="previsualizacionUrl"
-                  alt="Vista previa"
-                  class="img-fluid rounded"
-                  style="max-height: 120px"
+              <!-- NOMBRE -->
+              <div class="col-md-6">
+                <label for="nombre" class="form-label fw-semibold text-secondary">Nombre del Producto</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  class="form-control rounded-3"
+                  [class.is-invalid]="getControl('nombre').invalid && getControl('nombre').touched"
+                  formControlName="nombre"
+                  placeholder="Ej. Laptop HP ProBook"
                 />
+                @if (getControl('nombre').invalid && getControl('nombre').touched) {
+                  <div class="invalid-feedback">El nombre es requerido.</div>
+                }
               </div>
-            } @else {
-              <div
-                class="border rounded d-flex align-items-center justify-content-center text-muted bg-light"
-                style="height: 120px"
-              >
-                <span>Sin vista previa</span>
+
+              <!-- DESCRIPCIÓN -->
+              <div class="col-12">
+                <label for="descripcion" class="form-label fw-semibold text-secondary">Descripción General</label>
+                <textarea
+                  id="descripcion"
+                  class="form-control rounded-3"
+                  [class.is-invalid]="getControl('descripcion').invalid && getControl('descripcion').touched"
+                  formControlName="descripcion"
+                  rows="3"
+                  placeholder="Escribe las características principales, materiales o detalles clave..."
+                ></textarea>
+                @if (getControl('descripcion').invalid && getControl('descripcion').touched) {
+                  <div class="invalid-feedback">La descripción es requerida.</div>
+                }
               </div>
-            }
+
+              <!-- PRECIO -->
+              <div class="col-md-4">
+                <label for="precio" class="form-label fw-semibold text-secondary">Precio Unitario</label>
+                <div class="input-group has-validation shadow-none">
+                  <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">$</span>
+                  <input
+                    type="number"
+                    id="precio"
+                    class="form-control border-start-0 rounded-end-3"
+                    [class.is-invalid]="getControl('precio').invalid && getControl('precio').touched"
+                    formControlName="precio"
+                    step="0.01"
+                    placeholder="0.00"
+                  />
+                  @if (getControl('precio').invalid && getControl('precio').touched) {
+                    <div class="invalid-feedback w-100">
+                      @if (getControl('precio').errors?.['required']) { El precio es requerido. }
+                      @if (getControl('precio').errors?.['min']) { Debe ser mayor a $0.01. }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- DEPARTAMENTO -->
+              <div class="col-md-4" formGroupName="departamento">
+                <label for="idDepartamento" class="form-label fw-semibold text-secondary">Departamento</label>
+                <select
+                  id="idDepartamento"
+                  class="form-select rounded-3"
+                  [class.is-invalid]="
+                    getControl('departamento.idDepartamento').invalid &&
+                    getControl('departamento.idDepartamento').touched
+                  "
+                  formControlName="idDepartamento"
+                >
+                  <option value="" disabled selected>Selecciona una opción</option>
+                  @for (dep of listaDepartamentos; track dep.idDepartamento) {
+                    <option [value]="dep.idDepartamento">{{ dep.nombre }}</option>
+                  }
+                </select>
+                @if (getControl('departamento.idDepartamento').invalid && getControl('departamento.idDepartamento').touched) {
+                  <div class="invalid-feedback">Selecciona un departamento válido.</div>
+                }
+              </div>
+
+              <!-- ESTADO / STATUS -->
+              <div class="col-md-4">
+                <label for="status" class="form-label fw-semibold text-secondary">Estado Inicial</label>
+                <select
+                  id="status"
+                  class="form-select rounded-3"
+                  [class.is-invalid]="getControl('status').invalid && getControl('status').touched"
+                  formControlName="status"
+                >
+                  <option [value]="1">🟢 Activo</option>
+                  <option [value]="0">🔴 Inactivo</option>
+                </select>
+                @if (getControl('status').invalid && getControl('status').touched) {
+                  <div class="invalid-feedback">El estado es requerido.</div>
+                }
+              </div>
+
+            </div>
           </div>
         </div>
 
-        <div class="d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-secondary" routerLink="/products">Cancelar</button>
-          <button type="submit" class="btn btn-primary" [disabled]="formularioRegistro.invalid">
-            Guardar Producto
+        <!-- BOTONES DE ACCIÓN INFERIORES -->
+        <div class="d-flex justify-content-end gap-2 border-top mt-4 pt-3">
+          <button 
+            type="button" 
+            class="btn btn-light px-4 py-2 rounded-pill fw-medium" 
+            routerLink="/products">
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary px-4 py-2 rounded-pill shadow-sm fw-medium" 
+            [disabled]="formularioRegistro.invalid">
+            <i class="bi bi-check-lg me-1"></i> Guardar Producto
           </button>
         </div>
       </form>
+
     </div>
   </div>
 </div>

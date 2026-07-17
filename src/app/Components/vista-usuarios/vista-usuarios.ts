@@ -5,11 +5,13 @@ import { RolService } from '../../Services/rol-service';
 import { Usuario } from '../../Interfaces/usuario';
 import { Rol } from '../../Interfaces/rol';
 import { Result } from '../../Interfaces/result';
+import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-vista-usuarios',
   standalone: true,
-  imports: [],
+  imports: [RouterLink,VistaUserBadge],
   templateUrl: './vista-usuarios.html',
   styleUrl: './vista-usuarios.css',
 })

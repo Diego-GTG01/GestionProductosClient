@@ -5,10 +5,11 @@ import { Router, RouterLink } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-vista-producto-main',
-  imports: [CurrencyPipe, DatePipe, RouterLink, VistaUserBadge],
+  imports: [CurrencyPipe, DatePipe, RouterLink, VistaUserBadge, FormsModule],
   templateUrl: './vista-producto-main.html',
   styleUrl: './vista-producto-main.css',
 })
@@ -20,6 +21,15 @@ export class VistaProductoMain implements OnInit {
   ) {}
   productos: Producto[] = [];
   statusFiltro: number = 1;
+  productosFiltrados: Producto[] = [];
+
+  nombreFiltro: string = '';
+  claveFiltro: string = '';
+  precioMin: number | null = null;
+  precioMax: number | null = null;
+
+  paginaActual: number = 1;
+  elementosPorPagina: number = 10;
   ngOnInit(): void {
     this.idUsuario = Number(sessionStorage.getItem('idUsuario')) ?? 0;
     localStorage.removeItem('producto');
@@ -32,6 +42,54 @@ export class VistaProductoMain implements OnInit {
 
   get productosInactivos(): Producto[] {
     return this.productos.filter((p) => p.status !== 1);
+  }
+
+  get productosMostrar(): Producto[] {
+    let lista = this.productos.filter((p) => p.status === this.statusFiltro);
+
+    if (this.nombreFiltro.trim()) {
+      lista = lista.filter((p) => p.nombre.toLowerCase().includes(this.nombreFiltro.toLowerCase()));
+    }
+
+    if (this.claveFiltro.trim()) {
+      lista = lista.filter((p) => p.clave.toLowerCase().includes(this.claveFiltro.toLowerCase()));
+    }
+
+    if (this.precioMin != null) {
+      lista = lista.filter((p) => p.precio >= this.precioMin!);
+    }
+
+    if (this.precioMax != null) {
+      lista = lista.filter((p) => p.precio <= this.precioMax!);
+    }
+
+    return lista;
+  }
+
+  get productosPaginados(): Producto[] {
+    const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
+
+    return this.productosMostrar.slice(inicio, inicio + this.elementosPorPagina);
+  }
+
+  get totalPaginas(): number {
+    return Math.ceil(this.productosMostrar.length / this.elementosPorPagina);
+  }
+
+  paginaAnterior() {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+    }
+  }
+
+  paginaSiguiente() {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+    }
+  }
+
+  filtrar() {
+    this.paginaActual = 1;
   }
 
   cambiarTab(status: number): void {
