@@ -16,4 +16,14 @@ export class DepartamentoService {
   getAll(): Observable<Result<Departamento>> {
     return this.http.get<Result<Departamento>>(this.apiUrl);
   }
+  add(departamento: Departamento): Observable<Result<Departamento>> {
+    return this.http.post<Result<Departamento>>(this.apiUrl, departamento);
+  }
+  update(departamento: Departamento): Observable<Result<Departamento>> {
+    return this.http.put<Result<Departamento>>(this.apiUrl, departamento);
+  }
+  delete(idDepartamento: number): Observable<Result<Departamento>> {
+    return this.http.delete<Result<Departamento>>(this.apiUrl+'?idProducto='+idDepartamento);
+  }
+  
 }

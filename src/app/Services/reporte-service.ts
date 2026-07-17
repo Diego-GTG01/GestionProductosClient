@@ -1,9 +1,17 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Reporte } from '../Interfaces/reporte';
 import { Result } from '../Interfaces/result';
+
+export interface ProductoReporteFiltros {
+  nombre?: string;
+  idDepartamento?: number;
+  status?: number;
+  precioMin?: number;
+  precioMax?: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +38,47 @@ export class ReporteService {
       },
       error: (err) => {
         console.error('Error al obtener el reporte:', err);
+      },
+    });
+  }
+
+  getReporteProductosExcel(filtros: ProductoReporteFiltros = {}): Observable<Result<Reporte>> {
+    let params = new HttpParams();
+
+    if (filtros.nombre?.trim()) {
+      params = params.set('nombre', filtros.nombre.trim());
+    }
+    if (filtros.idDepartamento != null) {
+      params = params.set('idDepartamento', filtros.idDepartamento);
+    }
+    if (filtros.status != null) {
+      params = params.set('status', filtros.status);
+    }
+    if (filtros.precioMin != null) {
+      params = params.set('precioMin', filtros.precioMin);
+    }
+    if (filtros.precioMax != null) {
+      params = params.set('precioMax', filtros.precioMax);
+    }
+
+    return this.http.post<Result<Reporte>>(`${this.apiUrl}/productos/excel`, null, { params });
+  }
+
+  cargarReporteProductosExcel(filtros: ProductoReporteFiltros = {}, onFinally?: () => void): void {
+    this.getReporteProductosExcel(filtros).subscribe({
+      next: (result) => {
+        const reporte = result.object;
+
+        if (result.correct && reporte && reporte.file && reporte.fileName) {
+          this.procesarYDescargar(reporte);
+        } else {
+          console.error(reporte?.message || 'El reporte no contiene un archivo o nombre válido.');
+        }
+        onFinally?.();
+      },
+      error: (err) => {
+        console.error('Error al obtener el reporte de productos:', err);
+        onFinally?.();
       },
     });
   }
@@ -61,7 +110,8 @@ export class ReporteService {
     const extension = fileName.split('.').pop()?.toLowerCase();
     switch (extension) {
       case 'pdf': return 'application/pdf';
-      
+      case 'xlsx': return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
       default: return 'application/octet-stream';
     }
   }

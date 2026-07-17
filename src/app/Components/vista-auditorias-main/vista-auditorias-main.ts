@@ -7,11 +7,12 @@ import { AuditoriaService } from '../../Services/auditoria-service';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
 import { RouterLink } from '@angular/router';
 import { ReporteService } from '../../Services/reporte-service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-vista-auditorias-main',
   standalone: true,
-  imports: [CommonModule, VistaUserBadge, RouterLink],
+  imports: [CommonModule, VistaUserBadge, RouterLink, FormsModule ],
   templateUrl: './vista-auditorias-main.html',
   styleUrl: './vista-auditorias-main.css',
 })
@@ -24,14 +25,39 @@ export class VistaAuditoriasMain implements OnInit {
   paginaActual = 1;
   registrosPorPagina = 10;
 
+  mesSeleccionado: string = '';
+  anioSeleccionado: string = '';
+
+  meses = [
+    { value: '1', nombre: 'Enero' },
+    { value: '2', nombre: 'Febrero' },
+    { value: '3', nombre: 'Marzo' },
+    { value: '4', nombre: 'Abril' },
+    { value: '5', nombre: 'Mayo' },
+    { value: '6', nombre: 'Junio' },
+    { value: '7', nombre: 'Julio' },
+    { value: '8', nombre: 'Agosto' },
+    { value: '9', nombre: 'Septiembre' },
+    { value: '10', nombre: 'Octubre' },
+    { value: '11', nombre: 'Noviembre' },
+    { value: '12', nombre: 'Diciembre' },
+  ];
+
+  anios: number[] = [];
+
   constructor(
     private auditoriaService: AuditoriaService,
     private reporteService: ReporteService,
   ) {}
 
   ngOnInit(): void {
+    const actual = new Date().getFullYear();
+
+    for (let i = actual; i >= actual - 10; i--) {
+      this.anios.push(i);
+    }
+
     this.cargarAuditorias();
-    console.log(this.auditorias);
   }
   descargar() {
     this.reporteService.cargarReporte();
@@ -41,16 +67,39 @@ export class VistaAuditoriasMain implements OnInit {
     this.auditoriaService.getAll().subscribe({
       next: (result) => {
         if (result.correct) {
-          console.log('Auditorias obtenidas');
-          this.auditorias = result.objects.sort((a, b) => a.idAuditoria - b.idAuditoria);
-          this.auditoriasFiltradas = [...this.auditorias];
-          console.log(this.auditoriasFiltradas);
+          this.auditorias = result.objects.sort(
+            (a, b) => new Date(b.fechaOperacion).getTime() - new Date(a.fechaOperacion).getTime(),
+          );
+
+          this.aplicarFiltros();
         }
       },
       error: (err) => {
         this.auditorias = [];
       },
     });
+  }
+
+  aplicarFiltros(): void {
+    this.auditoriasFiltradas = this.auditorias.filter((a) => {
+      const fecha = new Date(a.fechaOperacion);
+
+      const coincideMes =
+        !this.mesSeleccionado || fecha.getMonth() + 1 === Number(this.mesSeleccionado);
+
+      const coincideAnio =
+        !this.anioSeleccionado || fecha.getFullYear() === Number(this.anioSeleccionado);
+
+      return coincideMes && coincideAnio;
+    });
+
+    this.paginaActual = 1;
+  }
+
+  limpiarFiltros(): void {
+    this.mesSeleccionado = '';
+    this.anioSeleccionado = '';
+    this.aplicarFiltros();
   }
 
   cambiarVista(tabla: boolean) {

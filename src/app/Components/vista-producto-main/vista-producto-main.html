@@ -19,9 +19,9 @@
     <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
       <button
         class="btn btn-outline-primary d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
-        routerLink="/audits"
+        routerLink="/departments"
       >
-        <i class="bi bi-diagram-3 me-2"></i> Departamentos 
+        <i class="bi bi-diagram-3 me-2"></i> Departamentos
       </button>
       <button
         class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
@@ -34,6 +34,24 @@
         routerLink="/users"
       >
         <i class="bi bi-people me-2"></i> Usuarios
+      </button>
+      <button
+        class="btn btn-outline-dark d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+        (click)="descargarReporteExcel()"
+        [disabled]="descargandoReporte"
+        type="button"
+        title="Descargar reporte de productos en Excel según los filtros aplicados"
+      >
+        @if (descargandoReporte) {
+          <span
+            class="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Generando...
+        } @else {
+          <i class="bi bi-file-earmark-excel me-2"></i> Exportar Excel
+        }
       </button>
       <button
         class="btn btn-primary shadow-sm d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
@@ -96,6 +114,14 @@
               />
             </div>
           </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <select class="form-select form-select-sm" [(ngModel)]="tipoOrden" (change)="filtrar()">
+              <option value="fechaDesc">Más recientes</option>
+              <option value="fechaAsc">Más antiguos</option>
+              <option value="nombreAsc">Nombre (A-Z)</option>
+              <option value="nombreDesc">Nombre (Z-A)</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -103,6 +129,17 @@
         class="col-12 col-xl-4 d-flex justify-content-between justify-content-xl-end align-items-center gap-3"
       >
         <div class="bg-light p-1 rounded-3 border d-flex gap-1" role="group">
+          <button
+            class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
+            [class.bg-white]="statusFiltro === 3"
+            [class.shadow-sm]="statusFiltro === 3"
+            [class.text-dark]="statusFiltro === 3"
+            [class.text-muted]="statusFiltro !== 3"
+            (click)="cambiarTab(3)"
+            type="button"
+          >
+            <i class="bi bi-list-task me-1 text-success"></i> Todos
+          </button>
           <button
             class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
             [class.bg-white]="statusFiltro === 1"

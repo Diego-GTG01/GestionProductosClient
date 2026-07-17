@@ -1,0 +1,228 @@
+<div class="container py-4">
+  <div class="mb-4">
+    <app-vista-user-badge></app-vista-user-badge>
+  </div>
+  <div
+    class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 mt-3"
+  >
+    <button
+      class="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
+      routerLink="/products"
+    >
+      <i class="bi bi-arrow-left"></i>
+      Regresar
+    </button>
+    <div>
+      <h2 class="fw-bold mb-1 d-flex align-items-center text-dark">
+        <i class="bi bi-diagram-3 me-2 text-primary fs-2"></i>
+        Departamentos
+      </h2>
+      <p class="text-muted mb-0">
+        Administra los departamentos registrados en el sistema de manera eficiente.
+      </p>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
+      <button
+        class="btn btn-primary shadow-sm d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+        (click)="agregarDepartamento()"
+        type="button"
+      >
+        <i class="bi bi-plus-lg me-2"></i> Nuevo Departamento
+      </button>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm p-3 mb-4 bg-white rounded-3">
+    <div class="row g-3 align-items-center">
+      <div class="col-12 col-xl-8">
+        <div class="row g-2">
+          <div class="col-12 col-sm-6 col-md-4">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-muted"><i class="bi bi-search"></i></span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nombre"
+                [(ngModel)]="nombreFiltro"
+                (input)="filtrar()"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-4">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light text-muted"><i class="bi bi-hash"></i></span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Prefijo"
+                [(ngModel)]="prefijoFiltro"
+                (input)="filtrar()"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="col-12 col-xl-4 d-flex justify-content-between justify-content-xl-end align-items-center gap-3"
+      >
+        <div class="bg-light p-1 rounded-3 border d-flex gap-1" role="group">
+          <button
+            class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
+            [class.bg-white]="statusFiltro === 1"
+            [class.shadow-sm]="statusFiltro === 1"
+            [class.text-dark]="statusFiltro === 1"
+            [class.text-muted]="statusFiltro !== 1"
+            (click)="cambiarTab(1)"
+            type="button"
+          >
+            <i class="bi bi-check-circle-fill me-1 text-success"></i> Activos
+          </button>
+          <button
+            class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
+            [class.bg-white]="statusFiltro === 0"
+            [class.shadow-sm]="statusFiltro === 0"
+            [class.text-dark]="statusFiltro === 0"
+            [class.text-muted]="statusFiltro !== 0"
+            (click)="cambiarTab(0)"
+            type="button"
+          >
+            <i class="bi bi-x-circle-fill me-1 text-danger"></i> Inactivos
+          </button>
+        </div>
+
+        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-normal shadow-xs">
+          <span class="fw-bold text-primary">{{
+            statusFiltro === 1 ? departamentosActivos.length : departamentosInactivos.length
+          }}</span>
+          Departamentos
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    @for (departamento of departamentosPaginados; track departamento.idDepartamento) {
+      <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+        <div class="card h-100 shadow-sm border border-light-subtle rounded-3 overflow-hidden">
+          <div
+            class="bg-light d-flex flex-column align-items-center justify-content-center position-relative border-bottom"
+            style="height: 120px"
+          >
+            <span
+              class="badge position-absolute top-0 start-0 m-3 shadow-sm px-2 py-1"
+              [class.bg-success]="departamento.status == 1"
+              [class.bg-danger]="departamento.status != 1"
+              style="font-size: 0.7rem"
+            >
+              {{ departamento.status == 1 ? 'Activo' : 'Inactivo' }}
+            </span>
+
+            <i class="bi bi-building display-3 text-primary opacity-50"></i>
+          </div>
+
+          <div class="card-body d-flex flex-column p-3">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span
+                class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1"
+                style="font-size: 0.7rem"
+              >
+                {{ departamento.prefijo }}
+              </span>
+            </div>
+
+            <h6 class="fw-bold text-dark text-truncate mb-2" title="{{ departamento.nombre }}">
+              {{ departamento.nombre }}
+            </h6>
+
+            <p
+              class="text-muted small mb-0"
+              style="
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                min-height: 3.2em;
+              "
+            >
+              {{ departamento.descripcion || 'Sin descripción' }}
+            </p>
+          </div>
+
+          <div class="card-footer bg-light border-top-0 p-2">
+            <div class="row g-1">
+              <div class="col-8">
+                <div class="btn-group w-100" role="group">
+                  <button
+                    class="btn btn-sm btn-outline-secondary border-end-0"
+                    (click)="verDetalle(departamento)"
+                    title="Ver detalle"
+                    type="button"
+                  >
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-primary"
+                    (click)="editar(departamento)"
+                    type="button"
+                  >
+                    <i class="bi bi-pencil me-1"></i> Editar
+                  </button>
+                </div>
+              </div>
+              <div class="col-4">
+                <button
+                  class="btn btn-sm w-100"
+                  [class.btn-outline-danger]="departamento.status == 1"
+                  [class.btn-outline-success]="departamento.status != 1"
+                  (click)="cambiarEstatus(departamento)"
+                  [title]="
+                    departamento.status == 1 ? 'Desactivar departamento' : 'Reactivar departamento'
+                  "
+                  type="button"
+                >
+                  <i
+                    class="bi"
+                    [class.bi-trash]="departamento.status == 1"
+                    [class.bi-arrow-counterclockwise]="departamento.status != 1"
+                  ></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <div class="bg-light d-inline-block rounded-circle p-4 mb-3 border">
+          <i class="bi bi-diagram-3 display-4 text-muted"></i>
+        </div>
+        <h5 class="fw-bold text-dark">No se encontraron departamentos</h5>
+        <p class="text-muted mx-auto mb-0" style="max-width: 360px">
+          Esta categoría está vacía o no hay elementos que coincidan con tus criterios de búsqueda.
+        </p>
+      </div>
+    }
+  </div>
+
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center pagination-sm">
+      <li class="page-item" [class.disabled]="paginaActual == 1">
+        <button class="page-link shadow-none" (click)="paginaAnterior()" type="button">
+          Anterior
+        </button>
+      </li>
+      <li class="page-item disabled">
+        <span class="page-link text-dark fw-medium px-3">
+          Pág. {{ paginaActual }} de {{ totalPaginas }}
+        </span>
+      </li>
+      <li class="page-item" [class.disabled]="paginaActual == totalPaginas">
+        <button class="page-link shadow-none" (click)="paginaSiguiente()" type="button">
+          Siguiente
+        </button>
+      </li>
+    </ul>
+  </nav>
+</div>

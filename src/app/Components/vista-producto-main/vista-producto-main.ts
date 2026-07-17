@@ -6,6 +6,8 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
 import { FormsModule } from '@angular/forms';
+import { ReporteService } from '../../Services/reporte-service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-vista-producto-main',
@@ -17,16 +19,20 @@ export class VistaProductoMain implements OnInit {
   idUsuario: number = 0;
   constructor(
     private productoService: ProductoService,
+    private reporteService: ReporteService,
     private router: Router,
   ) {}
   productos: Producto[] = [];
   statusFiltro: number = 1;
   productosFiltrados: Producto[] = [];
+  tipoOrden: string = 'fechaDesc';
 
   nombreFiltro: string = '';
   claveFiltro: string = '';
   precioMin: number | null = null;
   precioMax: number | null = null;
+
+  descargandoReporte: boolean = false;
 
   paginaActual: number = 1;
   elementosPorPagina: number = 10;
@@ -45,7 +51,11 @@ export class VistaProductoMain implements OnInit {
   }
 
   get productosMostrar(): Producto[] {
-    let lista = this.productos.filter((p) => p.status === this.statusFiltro);
+    let lista = [...this.productos];
+
+    if (this.statusFiltro != 3) {
+      lista = lista.filter((p) => p.status === this.statusFiltro);
+    }
 
     if (this.nombreFiltro.trim()) {
       lista = lista.filter((p) => p.nombre.toLowerCase().includes(this.nombreFiltro.toLowerCase()));
@@ -61,6 +71,29 @@ export class VistaProductoMain implements OnInit {
 
     if (this.precioMax != null) {
       lista = lista.filter((p) => p.precio <= this.precioMax!);
+    }
+
+    // Ordenamiento
+    switch (this.tipoOrden) {
+      case 'fechaDesc':
+        lista.sort(
+          (a, b) => new Date(b.fechaRegistro).getTime() - new Date(a.fechaRegistro).getTime(),
+        );
+        break;
+
+      case 'fechaAsc':
+        lista.sort(
+          (a, b) => new Date(a.fechaRegistro).getTime() - new Date(b.fechaRegistro).getTime(),
+        );
+        break;
+
+      case 'nombreAsc':
+        lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        break;
+
+      case 'nombreDesc':
+        lista.sort((a, b) => b.nombre.localeCompare(a.nombre));
+        break;
     }
 
     return lista;
@@ -94,6 +127,38 @@ export class VistaProductoMain implements OnInit {
 
   cambiarTab(status: number): void {
     this.statusFiltro = status;
+  }
+
+  descargarReporteExcel(): void {
+    if (this.descargandoReporte) {
+      return;
+    }
+    this.descargandoReporte = true;
+
+    this.reporteService.cargarReporteProductosExcel(
+      {
+        nombre: this.nombreFiltro,
+        status: this.statusFiltro !== 3 ? this.statusFiltro : undefined,
+        precioMin: this.precioMin ?? undefined,
+        precioMax: this.precioMax ?? undefined,
+      },
+      () => {
+        this.descargandoReporte = false;
+        Swal.fire({
+          title: '¡Exportación Exitosa!',
+          text: 'Los datos se han descargado correctamente.',
+          icon: 'success',
+          toast: true,
+          position: 'top-start',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          showClass: {
+            popup: 'animate__animated animate__fadeInDown',
+          },
+        });
+      },
+    );
   }
 
   cargarProductos(): void {

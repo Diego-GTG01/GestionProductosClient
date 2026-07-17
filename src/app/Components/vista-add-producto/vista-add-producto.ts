@@ -5,7 +5,7 @@ import { Departamento } from '../../Interfaces/departamento';
 import { RouterLink } from '@angular/router';
 import { DepartamentoService } from '../../Services/departamento-service';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-vista-add-producto',
@@ -48,7 +48,9 @@ export class VistaAddProducto implements OnInit {
     this.departamentoService.getAll().subscribe({
       next: (result) => {
         if (result.correct) {
-          this.listaDepartamentos = result.objects;
+          this.listaDepartamentos = result.objects.filter((a) => {
+            return a.status === 1;
+          });
         } else {
           console.error('No se pudo obtener Departamentos');
         }
