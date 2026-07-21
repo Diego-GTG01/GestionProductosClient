@@ -1,23 +1,24 @@
 <div class="login-background vh-100 d-flex justify-content-center align-items-center px-3">
-  
-  <div class="card login-card border-0 shadow-lg rounded-4 overflow-hidden" style="max-width: 400px; width: 100%;">
+  <div
+    class="card login-card border-0 shadow-lg rounded-4 overflow-hidden"
+    style="max-width: 400px; width: 100%"
+  >
     <div class="card-body p-4 p-sm-5">
-      
-      <!-- LOGO O ICONO DE LA APLICACIÓN -->
       <div class="text-center mb-4">
-        <div class="brand-icon-wrapper mx-auto mb-3 shadow-sm d-flex align-items-center justify-content-center">
+        <div
+          class="brand-icon-wrapper mx-auto mb-3 shadow-sm d-flex align-items-center justify-content-center"
+        >
           <i class="bi bi-box-seam-fill text-primary fs-2"></i>
         </div>
         <h3 class="fw-bold text-dark mb-1">Iniciar Sesión</h3>
         <p class="text-muted small">Plataforma de Gestión de Productos</p>
       </div>
 
-      <!-- FORMULARIO -->
       <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
-        
-        <!-- USUARIO -->
         <div class="mb-3">
-          <label class="form-label fw-semibold text-secondary small" for="username">Nombre de Usuario</label>
+          <label class="form-label fw-semibold text-secondary small" for="username"
+            >Nombre de Usuario</label
+          >
           <div class="input-group">
             <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
               <i class="bi bi-person-fill"></i>
@@ -26,22 +27,23 @@
               type="text"
               id="username"
               class="form-control bg-light border-start-0 rounded-end-3"
-              [class.is-invalid]="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
+              [class.is-invalid]="
+                loginForm.get('username')?.touched && loginForm.get('username')?.invalid
+              "
               formControlName="username"
               placeholder="Ej. admin"
               autocomplete="username"
             />
             @if (loginForm.get('username')?.touched && loginForm.get('username')?.invalid) {
-              <div class="invalid-feedback animate-fade-in">
-                El usuario es requerido.
-              </div>
+              <div class="invalid-feedback animate-fade-in">El usuario es requerido.</div>
             }
           </div>
         </div>
 
-        <!-- CONTRASEÑA -->
         <div class="mb-4">
-          <label class="form-label fw-semibold text-secondary small" for="password">Contraseña</label>
+          <label class="form-label fw-semibold text-secondary small" for="password"
+            >Contraseña</label
+          >
           <div class="input-group">
             <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
               <i class="bi bi-lock-fill"></i>
@@ -50,20 +52,19 @@
               type="password"
               id="password"
               class="form-control bg-light border-start-0 rounded-end-3"
-              [class.is-invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+              [class.is-invalid]="
+                loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+              "
               formControlName="password"
               placeholder="••••••••"
               autocomplete="current-password"
             />
             @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
-              <div class="invalid-feedback animate-fade-in">
-                La contraseña es requerida.
-              </div>
+              <div class="invalid-feedback animate-fade-in">La contraseña es requerida.</div>
             }
           </div>
         </div>
 
-        <!-- BOTÓN DE ENTRADA -->
         <button
           type="submit"
           class="btn btn-primary w-100 py-2.5 rounded-pill fw-medium shadow-sm d-flex align-items-center justify-content-center gap-2 transition-all btn-submit"
@@ -71,9 +72,7 @@
           <span>Ingresar</span>
           <i class="bi bi-arrow-right"></i>
         </button>
-
       </form>
-
     </div>
   </div>
 </div>

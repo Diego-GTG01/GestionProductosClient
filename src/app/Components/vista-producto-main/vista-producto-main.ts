@@ -44,12 +44,7 @@ export class VistaProductoMain implements OnInit {
     this.cargarProductos();
   }
 
-  /**
-   * Solo el rol ADMINISTRADOR puede crear, editar, desactivar/activar,
-   * cambiar imágenes y acceder a módulos administrativos (Departamentos,
-   * Auditorías, Usuarios, Exportar Excel). El rol USUARIO solo puede
-   * consultar el catálogo (filtrar y ver detalle).
-   */
+  
   get esAdmin(): boolean {
     return this.rol === 'ADMINISTRADOR';
   }
@@ -85,7 +80,6 @@ export class VistaProductoMain implements OnInit {
       lista = lista.filter((p) => p.precio <= this.precioMax!);
     }
 
-    // Ordenamiento
     switch (this.tipoOrden) {
       case 'fechaDesc':
         lista.sort(
