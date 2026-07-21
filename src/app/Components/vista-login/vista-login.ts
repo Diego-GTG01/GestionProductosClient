@@ -16,7 +16,19 @@ export class VistaLogin {
     username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
   });
-  
+
+  private readonly Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -25,22 +37,23 @@ export class VistaLogin {
   login() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+
       Swal.fire({
         icon: 'warning',
         title: 'Campos requeridos',
         text: 'Por favor, ingresa tu usuario y contraseña.',
         confirmButtonColor: '#2563eb',
       });
+
       return;
     }
 
     Swal.fire({
       title: 'Iniciando sesión...',
-      text: 'Validando tus credenciales con el servidor',
+      text: 'Validando tus credenciales',
       allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
+      allowEscapeKey: false,
+      didOpen: () => Swal.showLoading(),
     });
 
     const auth: LoginRequest = {
@@ -50,50 +63,60 @@ export class VistaLogin {
 
     this.authService.login(auth).subscribe({
       next: (result) => {
-        if (result && result.object) {
-          console.log(result.object.rol);
+        Swal.close();
+
+        if (result?.object) {
+          sessionStorage.clear();
+
           sessionStorage.setItem('token', result.object.token);
           sessionStorage.setItem('username', result.object.username);
           sessionStorage.setItem('idUsuario', result.object.idUsuario.toString());
           sessionStorage.setItem('idUsuarioActual', result.object.idUsuario.toString());
           sessionStorage.setItem('rol', result.object.rol);
-          
 
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer);
-              toast.addEventListener('mouseleave', Swal.resumeTimer);
-            },
-          });
-
-          Toast.fire({
+          this.Toast.fire({
             icon: 'success',
-            title: `¡Bienvenido de nuevo, ${result.object.username}!`,
+            title: `¡Bienvenido ${result.object.username}!`,
           });
-
-          Swal.close();
-          this.router.navigate(['/products']);
+          this.router.navigate(['/products']).then(() => {
+            this.Toast.fire({
+              icon: 'success',
+              title: `¡Bienvenido ${result.object.username}!`,
+            });
+          });
         } else {
           this.mostrarErrorAutenticacion();
         }
       },
       error: (err) => {
+        Swal.close();
+
+        if (err.status === 401) {
+          this.mostrarErrorAutenticacion();
+        } else {
+          this.mostrarErrorServidor();
+        }
+
         console.error(err);
-        this.mostrarErrorAutenticacion();
       },
     });
   }
 
-  private mostrarErrorAutenticacion() {
+  private mostrarErrorServidor(): void {
     Swal.fire({
       icon: 'error',
-      title: 'Acceso Denegado',
-      text: 'El usuario o la contraseña ingresados son incorrectos. Por favor, verifica tus datos.',
+      title: 'Servidor no disponible',
+      text: 'No fue posible establecer comunicación con el servidor. Inténtalo nuevamente más tarde.',
+      confirmButtonColor: '#dc3545',
+    });
+  }
+
+  private mostrarErrorAutenticacion(): void {
+    Swal.fire({
+      icon: 'error',
+      title: 'Credenciales incorrectas',
+      text: 'El usuario o la contraseña son incorrectos.',
+      confirmButtonText: 'Intentar nuevamente',
       confirmButtonColor: '#dc3545',
     });
   }

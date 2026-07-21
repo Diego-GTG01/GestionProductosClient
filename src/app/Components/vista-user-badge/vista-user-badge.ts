@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth-service';
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
   templateUrl: './vista-user-badge.html',
   styleUrl: './vista-user-badge.css',
 })
-export class VistaUserBadge {
+export class VistaUserBadge implements OnInit {
   username: string = '';
   token: string = '';
   idUsuario: number = 0;
@@ -33,12 +33,12 @@ export class VistaUserBadge {
       this.authService.validateToken().subscribe({
         next: (result) => {
           if (result) {
-            console.log('Token válido');
-            console.log(this.idUsuario);
           }
         },
         error: () => {
           sessionStorage.clear();
+
+          Swal.close();
 
           Swal.fire({
             icon: 'warning',
@@ -56,13 +56,14 @@ export class VistaUserBadge {
       this.router.navigate(['/']);
     }
   }
+
   verPerfil() {
     if (this.router.url === '/user-detail') {
       window.location.reload();
     }
     sessionStorage.removeItem('idUsuarioActual');
     sessionStorage.setItem('idUsuarioActual', String(this.idUsuario));
-    console.log(String(this.idUsuario));
+
     this.router.navigate(['/user-detail']);
   }
 
@@ -76,19 +77,21 @@ export class VistaUserBadge {
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#dc3545',
     }).then((result) => {
-      if (result.isConfirmed) {
-        sessionStorage.clear();
-
-        this.router.navigate(['/']);
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Sesión cerrada',
-          text: 'Has cerrado sesión correctamente.',
-          timer: 1500,
-          showConfirmButton: false,
-        });
+      if (!result.isConfirmed) {
+        return;
       }
+
+      sessionStorage.clear();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Sesión cerrada',
+        text: 'Has cerrado sesión correctamente.',
+        timer: 1500,
+        showConfirmButton: false,
+      }).then(() => {
+        this.router.navigate(['/']);
+      });
     });
   }
 }

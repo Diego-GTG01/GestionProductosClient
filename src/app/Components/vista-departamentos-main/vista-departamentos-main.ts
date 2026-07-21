@@ -24,6 +24,18 @@ export class VistaDepartamentosMain implements OnInit {
   paginaActual = 1;
   itemsPorPagina = 8;
 
+  private readonly Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
+
   constructor(private departamentoService: DepartamentoService) {}
 
   ngOnInit(): void {
@@ -31,11 +43,27 @@ export class VistaDepartamentosMain implements OnInit {
   }
 
   cargarDepartamentos(): void {
+    Swal.fire({
+      title: 'Cargando departamentos...',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
     this.departamentoService.getAll().subscribe({
       next: (result) => {
+        Swal.close();
+
         this.departamentos = result?.objects ?? result ?? [];
+
+        this.Toast.fire({
+          icon: 'success',
+          title: `${this.departamentos.length} departamentos cargados`,
+        });
       },
       error: () => {
+        Swal.close();
+
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -159,18 +187,26 @@ export class VistaDepartamentosMain implements OnInit {
           descripcion: result.value.descripcion,
           status: 1,
         };
+        Swal.fire({
+          title: 'Guardando...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+        });
 
         this.departamentoService.add(nuevoDepartamento).subscribe({
           next: () => {
-            Swal.fire({
+            Swal.close();
+
+            this.Toast.fire({
               icon: 'success',
-              title: 'Departamento agregado',
-              timer: 1500,
-              showConfirmButton: false,
+              title: 'Departamento agregado correctamente',
             });
+
             this.cargarDepartamentos();
           },
           error: () => {
+            Swal.close();
+
             Swal.fire({
               icon: 'error',
               title: 'Error',
@@ -242,11 +278,11 @@ export class VistaDepartamentosMain implements OnInit {
 
         this.departamentoService.update(departamentoActualizado).subscribe({
           next: () => {
-            Swal.fire({
+            Swal.close();
+
+            this.Toast.fire({
               icon: 'success',
               title: 'Departamento actualizado',
-              timer: 1500,
-              showConfirmButton: false,
             });
             this.cargarDepartamentos();
           },
@@ -278,12 +314,13 @@ export class VistaDepartamentosMain implements OnInit {
       if (result.isConfirmed) {
         this.departamentoService.delete(departamento.idDepartamento).subscribe({
           next: () => {
-            Swal.fire({
+            Swal.close();
+
+            this.Toast.fire({
               icon: 'success',
               title: activar ? 'Departamento reactivado' : 'Departamento desactivado',
-              timer: 1500,
-              showConfirmButton: false,
             });
+
             this.cargarDepartamentos();
           },
           error: () => {

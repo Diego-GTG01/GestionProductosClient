@@ -45,6 +45,18 @@ export class VistaAuditoriasMain implements OnInit {
 
   anios: number[] = [];
 
+  private readonly Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
+
   constructor(
     private auditoriaService: AuditoriaService,
     private reporteService: ReporteService,
@@ -61,21 +73,55 @@ export class VistaAuditoriasMain implements OnInit {
   }
   descargar() {
     this.reporteService.cargarReporte();
+    this.Toast.fire({
+      icon: 'success',
+      title: 'Descarga iniciada',
+    });
   }
 
   cargarAuditorias(): void {
+    Swal.fire({
+      title: 'Cargando auditorías...',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
     this.auditoriaService.getAll().subscribe({
       next: (result) => {
+        Swal.close();
+
         if (result.correct) {
           this.auditorias = result.objects.sort(
             (a, b) => new Date(b.fechaOperacion).getTime() - new Date(a.fechaOperacion).getTime(),
           );
 
           this.aplicarFiltros();
+
+          this.Toast.fire({
+            icon: 'success',
+            title: `${this.auditorias.length} auditorías cargadas`,
+          });
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Sin información',
+            text: result.message || 'No se encontraron auditorías.',
+          });
         }
       },
       error: (err) => {
+        Swal.close();
+
         this.auditorias = [];
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No fue posible obtener las auditorías.',
+        });
+
+        console.error(err);
       },
     });
   }

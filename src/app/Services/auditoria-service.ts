@@ -21,7 +21,6 @@ export class AuditoriaService {
     this.getAll().subscribe({
       next: (result) => {
         if (result.correct) {
-          console.log("Auditorias obtenidas")
           this.auditorias = result.objects;
         }
       },

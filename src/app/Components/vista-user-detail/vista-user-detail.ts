@@ -8,7 +8,7 @@ import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
 
 @Component({
   selector: 'app-vista-user-detail',
-  imports: [ VistaUserBadge],
+  imports: [VistaUserBadge],
   templateUrl: './vista-user-detail.html',
   styleUrl: './vista-user-detail.css',
 })
@@ -33,10 +33,12 @@ export class VistaUserDetail implements OnInit {
     private usuarioService: UsuarioService,
     private location: Location,
   ) {}
+
   ngOnInit(): void {
     this.idUsuario = parseInt(sessionStorage.getItem('idUsuarioActual') ?? '0');
     this.cargarUsuario(this.idUsuario);
   }
+
   volver() {
     this.location.back();
   }
@@ -46,13 +48,29 @@ export class VistaUserDetail implements OnInit {
       next: (result) => {
         if (result.correct) {
           this.usuario = result.object;
-          console.log(this.usuario);
         } else {
-          Swal.fire('Opps!', 'Algo salió mal', 'success');
+          // Cierra cualquier swal que el VistaUserBadge hijo pudiera
+          // haber abierto en paralelo (p. ej. "Sesión expirada"), para
+          // que este mensaje no se pise con el suyo ni viceversa.
+          Swal.close();
+
+          Swal.fire({
+            icon: 'error',
+            title: '¡Ups!',
+            text: result.message || 'Algo salió mal al obtener el usuario.',
+          });
         }
       },
       error: (err) => {
-        Swal.fire('error', 'Error inesperado en el servidor', 'error');
+        Swal.close();
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error inesperado en el servidor.',
+        });
+
+        console.error(err);
       },
     });
   }

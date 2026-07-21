@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core'; // <-- Importamos computed
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import Swal from 'sweetalert2';
 import { UsuarioService } from '../../Services/usuario-service';
 import { RolService } from '../../Services/rol-service';
@@ -56,26 +56,36 @@ export class VistaUsuarios implements OnInit {
       next: (resultado) => {
         this.roles.set((resultado as Result<Rol>)?.objects ?? []);
       },
-      error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudieron cargar los roles.',
-        });
+      error: (err) => {
+        // Error "de fondo" al iniciar: no forzamos un Swal que pueda
+        // pisarse con el de VistaUserBadge (sesión expirada) o con el
+        // de cargarUsuarios corriendo en paralelo. Se registra en consola.
+        console.error('Error al cargar roles:', err);
       },
     });
   }
 
-  cargarUsuarios(): void {
+  /**
+   * @param silencioso Si es true, no muestra ningún Swal en caso de
+   * error (se usa al refrescar la lista después de crear/actualizar/
+   * eliminar un usuario, para no pisar el Swal de éxito que ya se
+   * mostró o se está por mostrar).
+   */
+  cargarUsuarios(silencioso: boolean = false): void {
     this.cargando.set(true);
     this.usuarioService.getAll().subscribe({
       next: (resultado) => {
-        console.log(resultado);
         this.usuarios.set((resultado as Result<Usuario>)?.objects ?? []);
         this.cargando.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.cargando.set(false);
+
+        if (silencioso) {
+          console.error('Error al refrescar usuarios:', err);
+          return;
+        }
+
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -243,7 +253,6 @@ export class VistaUsuarios implements OnInit {
   }
 
   ver(usuario: Usuario) {
-    console.log(usuario.idUsuario)
     sessionStorage.setItem('idUsuarioActual', String(usuario.idUsuario));
     this.router.navigate(['/user-detail']);
   }
@@ -251,7 +260,10 @@ export class VistaUsuarios implements OnInit {
   private crear(usuario: Usuario): void {
     this.usuarioService.add(usuario).subscribe({
       next: () => {
-        this.cargarUsuarios();
+        // Refresco silencioso: si falla, no queremos que su error
+        // sobreescriba el mensaje de éxito que se muestra a continuación.
+        this.cargarUsuarios(true);
+
         Swal.fire({
           icon: 'success',
           title: 'Usuario creado',
@@ -267,8 +279,9 @@ export class VistaUsuarios implements OnInit {
 
   private actualizar(usuario: Usuario): void {
     this.usuarioService.update(usuario).subscribe({
-      next: (result) => {
-        this.cargarUsuarios();
+      next: () => {
+        this.cargarUsuarios(true);
+
         Swal.fire({
           icon: 'success',
           title: 'Usuario actualizado',
@@ -277,56 +290,56 @@ export class VistaUsuarios implements OnInit {
         });
       },
       error: (err) => {
-        if (err.status) {
-          const mensajeError = err.error?.message || 'Ocurrió un error inesperado';
+        const mensajeError = err?.error?.message || 'Ocurrió un error inesperado';
 
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: mensajeError,
-          });
-        }
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: mensajeError,
+        });
       },
     });
   }
 
   eliminar(usuario: Usuario): void {
     const activar = usuario.status === 0;
+
     if (usuario.idUsuario == this.idUsuarioSesion) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: `No se puede borrar el usuario de la session`,
-        showCancelButton: false,
-        showConfirmButton: false,
+        text: 'No se puede borrar el usuario de la sesión actual.',
+        confirmButtonText: 'Entendido',
       });
-    } else {
-      Swal.fire({
-        icon: 'warning',
-        title: activar ? '¿Activar Usuario?' : '¿Desactivar Usuario?',
-        text: `Se eliminará a ${usuario.nombre} ${usuario.apellidoPaterno}.`,
-        showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#dc3545',
-      }).then((resultado) => {
-        if (!resultado.isConfirmed) return;
-
-        this.usuarioService.delete(usuario.idUsuario).subscribe({
-          next: (result) => {
-            this.cargarUsuarios();
-            Swal.fire({
-              icon: 'success',
-              title: result.message,
-              timer: 1500,
-              showConfirmButton: false,
-            });
-          },
-          error: () => {
-            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar el usuario.' });
-          },
-        });
-      });
+      return;
     }
+
+    Swal.fire({
+      icon: 'warning',
+      title: activar ? '¿Activar Usuario?' : '¿Desactivar Usuario?',
+      text: `Se eliminará a ${usuario.nombre} ${usuario.apellidoPaterno}.`,
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#dc3545',
+    }).then((resultado) => {
+      if (!resultado.isConfirmed) return;
+
+      this.usuarioService.delete(usuario.idUsuario).subscribe({
+        next: (result) => {
+          this.cargarUsuarios(true);
+
+          Swal.fire({
+            icon: 'success',
+            title: result.message,
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        },
+        error: () => {
+          Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar el usuario.' });
+        },
+      });
+    });
   }
 }
