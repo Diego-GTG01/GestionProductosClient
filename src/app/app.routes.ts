@@ -6,6 +6,8 @@ import { VistaAddProducto } from './Components/vista-add-producto/vista-add-prod
 import { VistaAuditoriasMain } from './Components/vista-auditorias-main/vista-auditorias-main';
 import { VistaUsuarios } from './Components/vista-usuarios/vista-usuarios';
 import { VistaDepartamentosMain } from './Components/vista-departamentos-main/vista-departamentos-main';
+import { VistaUserBadge } from './Components/vista-user-badge/vista-user-badge';
+import { VistaUserDetail } from './Components/vista-user-detail/vista-user-detail';
 
 export const routes: Routes = [
   {
@@ -31,8 +33,13 @@ export const routes: Routes = [
   {
     path: 'users',
     component: VistaUsuarios,
-  },{
+  },
+  {
     path: 'departments',
-    component: VistaDepartamentosMain
-  }
+    component: VistaDepartamentosMain,
+  },
+  {
+    path: 'user-detail',
+    component: VistaUserDetail,
+  },
 ];

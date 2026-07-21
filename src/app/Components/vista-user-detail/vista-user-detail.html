@@ -1,0 +1,170 @@
+<div class="container py-4">
+  <app-vista-user-badge></app-vista-user-badge>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-outline-secondary" (click)="volver()">
+      <i class="bi bi-arrow-left me-2"></i>
+      Regresar
+    </button>
+  </div>
+
+  <div class="card border-0 shadow-lg">
+
+    <div class="row g-0">
+
+      <!-- Perfil -->
+      <div class="col-lg-4 border-end bg-light">
+
+        <div class="d-flex flex-column align-items-center justify-content-center h-100 p-5">
+
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mb-4"
+               style="width:150px;height:150px;">
+            <i class="bi bi-person-fill display-2"></i>
+          </div>
+
+          <h3 class="fw-bold text-center mb-1">
+            {{ usuario.nombre }}
+            {{ usuario.apellidoPaterno }}
+            {{ usuario.apellidoMaterno }}
+          </h3>
+
+          <p class="text-muted mb-3">
+            <i class="bi bi-at me-1"></i>
+            {{ usuario.username }}
+          </p>
+
+          <span
+            class="badge fs-6 px-3 py-2"
+            [class.bg-success]="usuario.status == 1"
+            [class.bg-danger]="usuario.status == 0">
+
+            <i
+              class="bi"
+              [class.bi-check-circle-fill]="usuario.status == 1"
+              [class.bi-x-circle-fill]="usuario.status == 0">
+            </i>
+
+            {{ usuario.status == 1 ? ' Activo' : ' Inactivo' }}
+          </span>
+
+          <hr class="w-100 my-4">
+
+          <div class="text-center">
+
+            <div class="mb-3">
+              <i class="bi bi-person-vcard-fill text-primary fs-4"></i>
+              <div class="small text-muted">ID de Usuario</div>
+              <div class="fw-semibold">{{ usuario.idUsuario }}</div>
+            </div>
+
+            <div>
+              <i class="bi bi-shield-lock-fill text-primary fs-4"></i>
+              <div class="small text-muted">Rol</div>
+              <div class="fw-semibold">{{ usuario.rol.nombre }}</div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Información -->
+      <div class="col-lg-8">
+
+        <div class="card-body p-4">
+
+          <h3 class="fw-bold mb-4">
+            <i class="bi bi-person-lines-fill text-primary me-2"></i>
+            Información del Usuario
+          </h3>
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <div class="card h-100 border">
+                <div class="card-body">
+                  <small class="text-muted">
+                    <i class="bi bi-person-fill me-2"></i>Nombre
+                  </small>
+                  <h5 class="mb-0 mt-2">{{ usuario.nombre }}</h5>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card h-100 border">
+                <div class="card-body">
+                  <small class="text-muted">
+                    <i class="bi bi-person-badge-fill me-2"></i>Apellido paterno
+                  </small>
+                  <h5 class="mb-0 mt-2">{{ usuario.apellidoPaterno }}</h5>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card h-100 border">
+                <div class="card-body">
+                  <small class="text-muted">
+                    <i class="bi bi-person-badge me-2"></i>Apellido materno
+                  </small>
+                  <h5 class="mb-0 mt-2">{{ usuario.apellidoMaterno }}</h5>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card h-100 border">
+                <div class="card-body">
+                  <small class="text-muted">
+                    <i class="bi bi-at me-2"></i>Usuario
+                  </small>
+                  <h5 class="mb-0 mt-2">{{ usuario.username }}</h5>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="card border">
+                <div class="card-body">
+                  <small class="text-muted">
+                    <i class="bi bi-envelope-fill me-2"></i>Correo electrónico
+                  </small>
+                  <h5 class="mb-0 mt-2">{{ usuario.email }}</h5>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card h-100 border">
+                <div class="card-body">
+                  <small class="text-muted">
+                    <i class="bi bi-phone-fill me-2"></i>Celular
+                  </small>
+                  <h5 class="mb-0 mt-2">{{ usuario.celular }}</h5>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card h-100 border">
+                <div class="card-body">
+                  <small class="text-muted">
+                    <i class="bi bi-telephone-fill me-2"></i>Teléfono
+                  </small>
+                  <h5 class="mb-0 mt-2">{{ usuario.telefono }}</h5>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

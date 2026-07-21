@@ -1,59 +1,243 @@
-# GestionProductosClient
+# Gestión de Productos - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
+Frontend desarrollado con **Angular 20** para el sistema de Gestión de Productos Institucionales.
 
-## Development server
+La aplicación permite administrar productos, departamentos, usuarios y auditorías, consumiendo una API REST desarrollada en Spring Boot protegida mediante autenticación JWT.
 
-To start a local development server, run:
+---
+
+# Tecnologías
+
+- Angular 20
+- TypeScript
+- Bootstrap 5
+- SweetAlert2
+- RxJS
+- Angular Router
+- HttpClient
+- JWT Authentication
+
+---
+
+# Características
+
+- Inicio de sesión mediante JWT.
+- Administración de productos.
+- Administración de departamentos.
+- Administración de usuarios.
+- Consulta de auditorías.
+- Exportación de reportes.
+- Gestión de imágenes de productos.
+- Protección de rutas mediante autenticación.
+- Consumo de servicios REST.
+
+---
+
+# Arquitectura del Proyecto
+
+El proyecto sigue una arquitectura modular basada en componentes y separación de responsabilidades.
+
+```
+src/
+│
+├── app/
+│   │
+│   ├── Components/
+│   │   ├── vista-login/
+│   │   ├── vista-producto-main/
+│   │   ├── vista-add-producto/
+│   │   ├── vista-detalle-producto/
+│   │   ├── vista-departamentos-main/
+│   │   ├── vista-usuarios/
+│   │   ├── vista-auditorias-main/
+│   │   └── vista-user-badge/
+│   │
+│   ├── Interfaces/
+│   │
+│   ├── Services/
+│   │
+│   ├── Interceptors/
+│   │
+│   ├── app.routes.ts
+│   ├── app.config.ts
+│   ├── app.ts
+│   └── app.html
+│
+└── environments/
+```
+
+---
+
+# Descripción de Carpetas
+
+## Components
+
+Contiene todos los componentes de la interfaz de usuario.
+
+| Componente | Descripción |
+|------------|-------------|
+| vista-login | Inicio de sesión del sistema. |
+| vista-producto-main | Listado principal de productos. |
+| vista-add-producto | Registro y edición de productos. |
+| vista-detalle-producto | Visualización detallada del producto. |
+| vista-departamentos-main | Administración de departamentos. |
+| vista-usuarios | Administración de usuarios. |
+| vista-auditorias-main | Consulta de auditorías. |
+| vista-user-badge | Información del usuario autenticado. |
+
+---
+
+## Services
+
+Contiene los servicios encargados de consumir la API REST mediante HttpClient.
+
+Ejemplos:
+
+- AuthService
+- ProductoService
+- UsuarioService
+- DepartamentoService
+- AuditoriaService
+
+---
+
+## Interfaces
+
+Define los modelos utilizados durante toda la aplicación.
+
+Ejemplos:
+
+- Producto
+- Usuario
+- Departamento
+- AuditoriaProducto
+- LoginRequest
+- LoginResponse
+
+---
+
+## Interceptors
+
+Contiene los interceptores HTTP.
+
+Actualmente se utiliza un interceptor para:
+
+- Agregar automáticamente el token JWT.
+- Proteger las peticiones autenticadas.
+- Centralizar el manejo de autorización.
+
+---
+
+## environments
+
+Contiene la configuración por ambiente.
+
+Ejemplo:
+
+```
+environment.development.ts
+```
+
+Aquí se configura la URL del Backend.
+
+---
+
+# Flujo de la aplicación
+
+```
+Usuario
+
+↓
+
+Login
+
+↓
+
+JWT
+
+↓
+
+Interceptor
+
+↓
+
+API REST (Spring Boot)
+
+↓
+
+Respuesta
+
+↓
+
+Componentes Angular
+```
+
+---
+
+# Instalación
+
+Instalar dependencias
+
+```bash
+npm install
+```
+
+---
+
+# Ejecutar el proyecto
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+La aplicación estará disponible en:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+# Compilar
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+El resultado se generará en:
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```
+dist/
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+# Funcionalidades principales
 
-```bash
-ng e2e
-```
+- Autenticación mediante JWT.
+- CRUD de Productos.
+- Administración de Departamentos.
+- Administración de Usuarios.
+- Consulta de Auditorías.
+- Exportación de reportes.
+- Búsqueda y filtrado de información.
+- Activación e inactivación de registros.
+- Visualización de detalles de productos.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+# Backend
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Este proyecto consume una API REST desarrollada con:
+
+- Spring Boot
+- Spring Security
+- JWT
+- JPA / Hibernate
+- Oracle Database
+
+---
+
+# Autor
+
+**Diego Gómez Tagle**

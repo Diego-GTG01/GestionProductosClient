@@ -15,6 +15,7 @@ export class VistaUserBadge {
   username: string = '';
   token: string = '';
   idUsuario: number = 0;
+  rol: string = '';
 
   constructor(
     private authService: AuthService,
@@ -22,16 +23,18 @@ export class VistaUserBadge {
   ) {}
 
   ngOnInit(): void {
-    this.username = sessionStorage.getItem('username') ?? 'Invitado';
+    this.username = sessionStorage.getItem('username') ?? '';
     this.token = sessionStorage.getItem('token') ?? '';
     this.idUsuario = Number(sessionStorage.getItem('idUsuario')) ?? 0;
+
+    this.rol = sessionStorage.getItem('rol') ?? '';
 
     if (this.token !== '') {
       this.authService.validateToken().subscribe({
         next: (result) => {
           if (result) {
             console.log('Token válido');
-            console.log(this.idUsuario)
+            console.log(this.idUsuario);
           }
         },
         error: () => {
@@ -52,6 +55,15 @@ export class VistaUserBadge {
     } else {
       this.router.navigate(['/']);
     }
+  }
+  verPerfil() {
+    if (this.router.url === '/user-detail') {
+      window.location.reload();
+    }
+    sessionStorage.removeItem('idUsuarioActual');
+    sessionStorage.setItem('idUsuarioActual', String(this.idUsuario));
+    console.log(String(this.idUsuario));
+    this.router.navigate(['/user-detail']);
   }
 
   logout(): void {

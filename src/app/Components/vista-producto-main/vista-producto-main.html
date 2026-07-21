@@ -17,48 +17,50 @@
     </div>
 
     <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
-      <button
-        class="btn btn-outline-primary d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
-        routerLink="/departments"
-      >
-        <i class="bi bi-diagram-3 me-2"></i> Departamentos
-      </button>
-      <button
-        class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
-        routerLink="/audits"
-      >
-        <i class="bi bi-shield-check me-2"></i> Auditorías
-      </button>
-      <button
-        class="btn btn-outline-success d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
-        routerLink="/users"
-      >
-        <i class="bi bi-people me-2"></i> Usuarios
-      </button>
-      <button
-        class="btn btn-outline-dark d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
-        (click)="descargarReporteExcel()"
-        [disabled]="descargandoReporte"
-        type="button"
-        title="Descargar reporte de productos en Excel según los filtros aplicados"
-      >
-        @if (descargandoReporte) {
-          <span
-            class="spinner-border spinner-border-sm me-2"
-            role="status"
-            aria-hidden="true"
-          ></span>
-          Generando...
-        } @else {
-          <i class="bi bi-file-earmark-excel me-2"></i> Exportar Excel
-        }
-      </button>
-      <button
-        class="btn btn-primary shadow-sm d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
-        routerLink="/add-product"
-      >
-        <i class="bi bi-plus-lg me-2"></i> Nuevo Producto
-      </button>
+      @if (esAdmin) {
+        <button
+          class="btn btn-outline-primary d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+          routerLink="/departments"
+        >
+          <i class="bi bi-diagram-3 me-2"></i> Departamentos
+        </button>
+        <button
+          class="btn btn-outline-secondary d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+          routerLink="/audits"
+        >
+          <i class="bi bi-shield-check me-2"></i> Auditorías
+        </button>
+        <button
+          class="btn btn-outline-success d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+          routerLink="/users"
+        >
+          <i class="bi bi-people me-2"></i> Usuarios
+        </button>
+        <button
+          class="btn btn-outline-dark d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+          (click)="descargarReporteExcel()"
+          [disabled]="descargandoReporte"
+          type="button"
+          title="Descargar reporte de productos en Excel según los filtros aplicados"
+        >
+          @if (descargandoReporte) {
+            <span
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Generando...
+          } @else {
+            <i class="bi bi-file-earmark-excel me-2"></i> Exportar Excel
+          }
+        </button>
+        <button
+          class="btn btn-primary shadow-sm d-inline-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
+          routerLink="/add-product"
+        >
+          <i class="bi bi-plus-lg me-2"></i> Nuevo Producto
+        </button>
+      }
     </div>
   </div>
 
@@ -129,17 +131,19 @@
         class="col-12 col-xl-4 d-flex justify-content-between justify-content-xl-end align-items-center gap-3"
       >
         <div class="bg-light p-1 rounded-3 border d-flex gap-1" role="group">
-          <button
-            class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
-            [class.bg-white]="statusFiltro === 3"
-            [class.shadow-sm]="statusFiltro === 3"
-            [class.text-dark]="statusFiltro === 3"
-            [class.text-muted]="statusFiltro !== 3"
-            (click)="cambiarTab(3)"
-            type="button"
-          >
-            <i class="bi bi-list-task me-1 text-success"></i> Todos
-          </button>
+          @if (esAdmin) {
+            <button
+              class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
+              [class.bg-white]="statusFiltro === 3"
+              [class.shadow-sm]="statusFiltro === 3"
+              [class.text-dark]="statusFiltro === 3"
+              [class.text-muted]="statusFiltro !== 3"
+              (click)="cambiarTab(3)"
+              type="button"
+            >
+              <i class="bi bi-list-task me-1 text-success"></i> Todos
+            </button>
+          }
           <button
             class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
             [class.bg-white]="statusFiltro === 1"
@@ -151,17 +155,19 @@
           >
             <i class="bi bi-check-circle-fill me-1 text-success"></i> Activos
           </button>
-          <button
-            class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
-            [class.bg-white]="statusFiltro === 0"
-            [class.shadow-sm]="statusFiltro === 0"
-            [class.text-dark]="statusFiltro === 0"
-            [class.text-muted]="statusFiltro !== 0"
-            (click)="cambiarTab(0)"
-            type="button"
-          >
-            <i class="bi bi-x-circle-fill me-1 text-danger"></i> Inactivos
-          </button>
+          @if (esAdmin) {
+            <button
+              class="btn btn-sm rounded-2 px-3 fw-semibold border-0"
+              [class.bg-white]="statusFiltro === 0"
+              [class.shadow-sm]="statusFiltro === 0"
+              [class.text-dark]="statusFiltro === 0"
+              [class.text-muted]="statusFiltro !== 0"
+              (click)="cambiarTab(0)"
+              type="button"
+            >
+              <i class="bi bi-x-circle-fill me-1 text-danger"></i> Inactivos
+            </button>
+          }
         </div>
 
         <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-normal shadow-xs">
@@ -204,15 +210,17 @@
               </div>
             }
 
-            <button
-              class="btn btn-light btn-sm rounded-circle shadow-sm position-absolute border"
-              style="bottom: 12px; right: 12px; width: 34px; height: 34px; padding: 0"
-              (click)="editarImagen(producto)"
-              title="Cambiar imagen"
-              type="button"
-            >
-              <i class="bi bi-camera"></i>
-            </button>
+            @if (esAdmin) {
+              <button
+                class="btn btn-light btn-sm rounded-circle shadow-sm position-absolute border"
+                style="bottom: 12px; right: 12px; width: 34px; height: 34px; padding: 0"
+                (click)="editarImagen(producto)"
+                title="Cambiar imagen"
+                type="button"
+              >
+                <i class="bi bi-camera"></i>
+              </button>
+            }
           </div>
 
           <div class="card-body d-flex flex-column p-3">
@@ -250,35 +258,43 @@
 
           <div class="card-footer bg-light border-top-0 p-2">
             <div class="row g-1">
-              <div class="col-8">
+              <div [class.col-8]="esAdmin" [class.col-12]="!esAdmin">
                 <div class="btn-group w-100" role="group">
                   <button
-                    class="btn btn-sm btn-outline-secondary border-end-0"
+                    class="btn btn-sm btn-outline-secondary"
+                    [class.border-end-0]="esAdmin"
                     (click)="verDetalle(producto)"
                     title="Ver detalle"
                   >
                     <i class="bi bi-eye"></i>
+                    @if (!esAdmin) {
+                      <span class="ms-1">Ver detalle</span>
+                    }
                   </button>
-                  <button class="btn btn-sm btn-primary" (click)="editar(producto)">
-                    <i class="bi bi-pencil me-1"></i> Editar
-                  </button>
+                  @if (esAdmin) {
+                    <button class="btn btn-sm btn-primary" (click)="editar(producto)">
+                      <i class="bi bi-pencil me-1"></i> Editar
+                    </button>
+                  }
                 </div>
               </div>
-              <div class="col-4">
-                <button
-                  class="btn btn-sm w-100"
-                  [class.btn-outline-danger]="producto.status == 1"
-                  [class.btn-outline-success]="producto.status != 1"
-                  (click)="deleteProducto(producto)"
-                  [title]="producto.status == 1 ? 'Desactivar producto' : 'Reactivar producto'"
-                >
-                  <i
-                    class="bi"
-                    [class.bi-trash]="producto.status == 1"
-                    [class.bi-arrow-counterclockwise]="producto.status != 1"
-                  ></i>
-                </button>
-              </div>
+              @if (esAdmin) {
+                <div class="col-4">
+                  <button
+                    class="btn btn-sm w-100"
+                    [class.btn-outline-danger]="producto.status == 1"
+                    [class.btn-outline-success]="producto.status != 1"
+                    (click)="deleteProducto(producto)"
+                    [title]="producto.status == 1 ? 'Desactivar producto' : 'Reactivar producto'"
+                  >
+                    <i
+                      class="bi"
+                      [class.bi-trash]="producto.status == 1"
+                      [class.bi-arrow-counterclockwise]="producto.status != 1"
+                    ></i>
+                  </button>
+                </div>
+              }
             </div>
           </div>
         </div>

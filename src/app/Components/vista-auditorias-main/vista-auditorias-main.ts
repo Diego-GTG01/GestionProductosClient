@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-vista-auditorias-main',
   standalone: true,
-  imports: [CommonModule, VistaUserBadge, RouterLink, FormsModule ],
+  imports: [CommonModule, VistaUserBadge, RouterLink, FormsModule],
   templateUrl: './vista-auditorias-main.html',
   styleUrl: './vista-auditorias-main.css',
 })
@@ -148,21 +148,84 @@ export class VistaAuditoriasMain implements OnInit {
 
   detalle(a: AuditoriaProducto) {
     Swal.fire({
-      title: 'Detalle de Auditoría',
-      html: `
-      <div class="text-start">
-      <p><b>Folio:</b> ${a.idAuditoria}</p>
-      <p><b>Producto:</b> ${a.producto.nombre}</p>
-      <p><b>Operación:</b> ${a.tipoOperacion.nombre}</p>
-      <p><b>Usuario:</b> ${a.usuario.username}</p>
-      <p><b>Fecha:</b> ${new Date(a.fechaOperacion).toLocaleString()}</p>
-      <hr>
-      <p>${a.descripcionCambio}</p>
+      title: `
+      <div class="d-flex align-items-center justify-content-center">
+        <i class="bi bi-clock-history text-primary fs-3 me-2"></i>
+        <span>Detalle de Auditoría</span>
       </div>
+    `,
+      html: `
+      <div class="container-fluid text-start">
 
-      `,
+        <div class="card border-0 bg-light mb-3">
+          <div class="card-body">
 
-      confirmButtonText: 'Aceptar',
+            <div class="row g-3">
+
+              <div class="col-md-6">
+                <small class="text-muted">
+                  <i class="bi bi-hash me-1 text-primary"></i>Folio
+                </small>
+                <div class="fw-semibold">${a.idAuditoria}</div>
+              </div>
+
+              <div class="col-md-6">
+                <small class="text-muted">
+                  <i class="bi bi-box-seam me-1 text-success"></i>Producto
+                </small>
+                <div class="fw-semibold">${a.producto.nombre}</div>
+              </div>
+
+              <div class="col-md-6">
+                <small class="text-muted">
+                  <i class="bi bi-arrow-repeat me-1 text-warning"></i>Operación
+                </small>
+                <div>
+                  <span class="badge bg-primary">
+                    ${a.tipoOperacion.nombre}
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <small class="text-muted">
+                  <i class="bi bi-person-fill me-1 text-info"></i>Usuario
+                </small>
+                <div class="fw-semibold">${a.usuario.username}</div>
+              </div>
+
+              <div class="col-12">
+                <small class="text-muted">
+                  <i class="bi bi-calendar-event me-1 text-danger"></i>Fecha de operación
+                </small>
+                <div class="fw-semibold">
+                  ${new Date(a.fechaOperacion).toLocaleString()}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card border-primary">
+          <div class="card-header bg-primary text-white">
+            <i class="bi bi-file-earmark-text me-2"></i>
+            Descripción del cambio
+          </div>
+
+          <div class="card-body">
+            <p class="mb-0 text-break">
+              ${a.descripcionCambio}
+            </p>
+          </div>
+        </div>
+
+      </div>
+    `,
+      width: '700px',
+      confirmButtonText: '<i class="bi bi-check-circle me-2"></i>Aceptar',
+      confirmButtonColor: '#0d6efd',
     });
   }
 }

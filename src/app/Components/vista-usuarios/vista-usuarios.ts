@@ -6,18 +6,19 @@ import { Usuario } from '../../Interfaces/usuario';
 import { Rol } from '../../Interfaces/rol';
 import { Result } from '../../Interfaces/result';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-vista-usuarios',
   standalone: true,
-  imports: [RouterLink,VistaUserBadge],
+  imports: [RouterLink, VistaUserBadge],
   templateUrl: './vista-usuarios.html',
   styleUrl: './vista-usuarios.css',
 })
 export class VistaUsuarios implements OnInit {
   private usuarioService = inject(UsuarioService);
   private rolService = inject(RolService);
+  private router = inject(Router);
 
   usuarios = signal<Usuario[]>([]);
   roles = signal<Rol[]>([]);
@@ -239,6 +240,12 @@ export class VistaUsuarios implements OnInit {
         this.actualizar(actualizado);
       }
     });
+  }
+
+  ver(usuario: Usuario) {
+    console.log(usuario.idUsuario)
+    sessionStorage.setItem('idUsuarioActual', String(usuario.idUsuario));
+    this.router.navigate(['/user-detail']);
   }
 
   private crear(usuario: Usuario): void {

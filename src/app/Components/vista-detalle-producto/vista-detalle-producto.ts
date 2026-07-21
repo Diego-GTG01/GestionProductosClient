@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 })
 export class VistaDetalleProducto implements OnInit {
   producto!: Producto;
+  rol: string = '';
 
   constructor(
     private router: Router,
@@ -21,6 +22,8 @@ export class VistaDetalleProducto implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.rol = sessionStorage.getItem('rol') ?? '';
+
     const producto = localStorage.getItem('producto');
     if (producto) {
       this.producto = JSON.parse(producto);
@@ -29,8 +32,20 @@ export class VistaDetalleProducto implements OnInit {
     }
   }
 
+  /**
+   * Solo el rol ADMINISTRADOR puede editar el producto o su imagen.
+   * El rol USUARIO solo puede consultar el detalle.
+   */
+  get esAdmin(): boolean {
+    return this.rol === 'ADMINISTRADOR';
+  }
+
   // 1. Método para editar información de texto y departamento
   abrirEditarProducto(): void {
+    if (!this.esAdmin) {
+      return;
+    }
+
     // Hacemos una copia profunda del producto para evitar mutar el estado antes de guardar
     const copiaProducto = JSON.parse(JSON.stringify(this.producto));
 
@@ -75,6 +90,10 @@ export class VistaDetalleProducto implements OnInit {
 
   // 2. Método para cambiar la imagen
   abrirEditarImagen(): void {
+    if (!this.esAdmin) {
+      return;
+    }
+
     // Tu servicio ya ejecuta la petición PATCH internamente al subir la imagen
     this.productoService.editarImagenProducto(this.producto).then((productoConNuevaImagen) => {
       if (productoConNuevaImagen) {

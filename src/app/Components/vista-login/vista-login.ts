@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../Services/auth-service';
 import { Router } from '@angular/router';
 import { LoginRequest } from '../../Interfaces/auth-login';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-vista-login',
@@ -16,7 +16,7 @@ export class VistaLogin {
     username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
   });
-
+  
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -29,7 +29,7 @@ export class VistaLogin {
         icon: 'warning',
         title: 'Campos requeridos',
         text: 'Por favor, ingresa tu usuario y contraseña.',
-        confirmButtonColor: '#2563eb'
+        confirmButtonColor: '#2563eb',
       });
       return;
     }
@@ -40,7 +40,7 @@ export class VistaLogin {
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
 
     const auth: LoginRequest = {
@@ -51,9 +51,13 @@ export class VistaLogin {
     this.authService.login(auth).subscribe({
       next: (result) => {
         if (result && result.object) {
+          console.log(result.object.rol);
           sessionStorage.setItem('token', result.object.token);
           sessionStorage.setItem('username', result.object.username);
           sessionStorage.setItem('idUsuario', result.object.idUsuario.toString());
+          sessionStorage.setItem('idUsuarioActual', result.object.idUsuario.toString());
+          sessionStorage.setItem('rol', result.object.rol);
+          
 
           const Toast = Swal.mixin({
             toast: true,
@@ -64,12 +68,12 @@ export class VistaLogin {
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', Swal.stopTimer);
               toast.addEventListener('mouseleave', Swal.resumeTimer);
-            }
+            },
           });
 
           Toast.fire({
             icon: 'success',
-            title: `¡Bienvenido de nuevo, ${result.object.username}!`
+            title: `¡Bienvenido de nuevo, ${result.object.username}!`,
           });
 
           Swal.close();
@@ -90,7 +94,7 @@ export class VistaLogin {
       icon: 'error',
       title: 'Acceso Denegado',
       text: 'El usuario o la contraseña ingresados son incorrectos. Por favor, verifica tus datos.',
-      confirmButtonColor: '#dc3545'
+      confirmButtonColor: '#dc3545',
     });
   }
 }

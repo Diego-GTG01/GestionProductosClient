@@ -17,6 +17,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class VistaProductoMain implements OnInit {
   idUsuario: number = 0;
+  rol: string = '';
   constructor(
     private productoService: ProductoService,
     private reporteService: ReporteService,
@@ -38,8 +39,19 @@ export class VistaProductoMain implements OnInit {
   elementosPorPagina: number = 10;
   ngOnInit(): void {
     this.idUsuario = Number(sessionStorage.getItem('idUsuario')) ?? 0;
+    this.rol = sessionStorage.getItem('rol') ?? '';
     localStorage.removeItem('producto');
     this.cargarProductos();
+  }
+
+  /**
+   * Solo el rol ADMINISTRADOR puede crear, editar, desactivar/activar,
+   * cambiar imágenes y acceder a módulos administrativos (Departamentos,
+   * Auditorías, Usuarios, Exportar Excel). El rol USUARIO solo puede
+   * consultar el catálogo (filtrar y ver detalle).
+   */
+  get esAdmin(): boolean {
+    return this.rol === 'ADMINISTRADOR';
   }
 
   get productosActivos(): Producto[] {
@@ -126,11 +138,14 @@ export class VistaProductoMain implements OnInit {
   }
 
   cambiarTab(status: number): void {
+    if (!this.esAdmin && status !== 1) {
+      return;
+    }
     this.statusFiltro = status;
   }
 
   descargarReporteExcel(): void {
-    if (this.descargandoReporte) {
+    if (!this.esAdmin || this.descargandoReporte) {
       return;
     }
     this.descargandoReporte = true;
@@ -183,6 +198,9 @@ export class VistaProductoMain implements OnInit {
   }
 
   editar(producto: Producto) {
+    if (!this.esAdmin) {
+      return;
+    }
     this.productoService.editarProducto(producto).then((productoEditado) => {
       if (productoEditado) {
         this.productoService.update(productoEditado).subscribe((resp) => {
@@ -195,6 +213,9 @@ export class VistaProductoMain implements OnInit {
   }
 
   editarImagen(producto: Producto) {
+    if (!this.esAdmin) {
+      return;
+    }
     this.productoService.editarImagenProducto(producto).then((productoEditado) => {
       if (productoEditado) {
         console.log('Producto actualizado correctamente:', productoEditado);
@@ -204,6 +225,9 @@ export class VistaProductoMain implements OnInit {
   }
 
   deleteProducto(producto: Producto): void {
+    if (!this.esAdmin) {
+      return;
+    }
     const activar = producto.status === 0;
 
     Swal.fire({

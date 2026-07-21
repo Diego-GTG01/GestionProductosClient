@@ -5,23 +5,22 @@ import Swal from 'sweetalert2';
 import { Departamento } from '../../Interfaces/departamento';
 import { DepartamentoService } from '../../Services/departamento-service';
 import { VistaUserBadge } from '../vista-user-badge/vista-user-badge';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-vista-departamentos-main',
   standalone: true,
-  imports: [CommonModule, FormsModule, VistaUserBadge],
+  imports: [CommonModule, FormsModule, RouterLink, VistaUserBadge],
   templateUrl: './vista-departamentos-main.html',
   styleUrl: './vista-departamentos-main.css',
 })
 export class VistaDepartamentosMain implements OnInit {
   departamentos: Departamento[] = [];
 
-  // Filtros
   nombreFiltro = '';
   prefijoFiltro = '';
   statusFiltro = 1;
 
-  // Paginación
   paginaActual = 1;
   itemsPorPagina = 8;
 
@@ -34,7 +33,6 @@ export class VistaDepartamentosMain implements OnInit {
   cargarDepartamentos(): void {
     this.departamentoService.getAll().subscribe({
       next: (result) => {
-        
         this.departamentos = result?.objects ?? result ?? [];
       },
       error: () => {
@@ -56,8 +54,7 @@ export class VistaDepartamentosMain implements OnInit {
   }
 
   get departamentosFiltrados(): Departamento[] {
-    const lista =
-      this.statusFiltro === 1 ? this.departamentosActivos : this.departamentosInactivos;
+    const lista = this.statusFiltro === 1 ? this.departamentosActivos : this.departamentosInactivos;
 
     return lista.filter((d) => {
       const coincideNombre = d.nombre
@@ -141,9 +138,7 @@ export class VistaDepartamentosMain implements OnInit {
       cancelButtonColor: '#6c757d',
       preConfirm: () => {
         const nombre = (document.getElementById('swal-nombre') as HTMLInputElement).value.trim();
-        const prefijo = (
-          document.getElementById('swal-prefijo') as HTMLInputElement
-        ).value.trim();
+        const prefijo = (document.getElementById('swal-prefijo') as HTMLInputElement).value.trim();
         const descripcion = (
           document.getElementById('swal-descripcion') as HTMLTextAreaElement
         ).value.trim();
@@ -187,7 +182,6 @@ export class VistaDepartamentosMain implements OnInit {
     });
   }
 
-
   editar(departamento: Departamento): void {
     Swal.fire({
       title: 'Editar Departamento',
@@ -223,15 +217,11 @@ export class VistaDepartamentosMain implements OnInit {
       cancelButtonColor: '#6c757d',
       preConfirm: () => {
         const nombre = (document.getElementById('swal-nombre') as HTMLInputElement).value.trim();
-        const prefijo = (
-          document.getElementById('swal-prefijo') as HTMLInputElement
-        ).value.trim();
+        const prefijo = (document.getElementById('swal-prefijo') as HTMLInputElement).value.trim();
         const descripcion = (
           document.getElementById('swal-descripcion') as HTMLTextAreaElement
         ).value.trim();
-        const status = Number(
-          (document.getElementById('swal-status') as HTMLSelectElement).value
-        );
+        const status = Number((document.getElementById('swal-status') as HTMLSelectElement).value);
 
         if (!nombre || !prefijo) {
           Swal.showValidationMessage('El nombre y el prefijo son obligatorios');
@@ -272,7 +262,6 @@ export class VistaDepartamentosMain implements OnInit {
     });
   }
 
-
   cambiarEstatus(departamento: Departamento): void {
     const activar = departamento.status !== 1;
 
@@ -287,8 +276,6 @@ export class VistaDepartamentosMain implements OnInit {
       cancelButtonColor: '#6c757d',
     }).then((result) => {
       if (result.isConfirmed) {
-        
-
         this.departamentoService.delete(departamento.idDepartamento).subscribe({
           next: () => {
             Swal.fire({
